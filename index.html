@@ -1,79 +1,96 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <title>Sentral Pulsa</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8">
+<title>Sentral Pulsa</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f2f4f8;
-    }
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f1f3f6;
+}
 
-    header {
-      background: #1e88e5;
-      color: white;
-      padding: 15px;
-      text-align: center;
-      font-size: 18px;
-      font-weight: bold;
-    }
+header {
+  background: #1565c0;
+  color: #fff;
+  padding: 15px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+}
 
-    .container {
-      padding: 15px;
-    }
+.container {
+  padding: 15px;
+}
 
-    .card {
-      background: white;
-      border-radius: 10px;
-      padding: 15px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
+.card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 15px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
 
-    label {
-      font-size: 14px;
-      font-weight: bold;
-      display: block;
-      margin-top: 15px;
-      margin-bottom: 5px;
-    }
+label {
+  display: block;
+  margin-top: 15px;
+  font-size: 14px;
+  font-weight: bold;
+}
 
-    input, select {
-      width: 100%;
-      padding: 10px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      font-size: 14px;
-    }
+input, select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
 
-    button {
-      margin-top: 20px;
-      width: 100%;
-      padding: 12px;
-      background: #1e88e5;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
-      font-weight: bold;
-    }
+.products {
+  margin-top: 10px;
+}
 
-    .note {
-      text-align: center;
-      font-size: 12px;
-      color: gray;
-      margin-top: 15px;
-    }
-  </style>
+.product {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.product input {
+  margin-right: 8px;
+}
+
+button {
+  margin-top: 20px;
+  width: 100%;
+  padding: 12px;
+  background: #1565c0;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.note {
+  text-align: center;
+  font-size: 12px;
+  color: gray;
+  margin-top: 15px;
+}
+</style>
 </head>
 
 <body>
 
-<header>
-  SENTRAL PULSA
-</header>
+<header>SENTRAL PULSA</header>
 
 <div class="container">
   <div class="card">
@@ -81,28 +98,46 @@
     <label>Nomor HP</label>
     <input type="text" placeholder="08xxxxxxxxxx">
 
-    <label>Operator</label>
+    <label>Kategori</label>
     <select>
-      <option>Telkomsel</option>
-      <option>XL / Axis</option>
-      <option>Indosat</option>
-      <option>Tri</option>
-      <option>Smartfren</option>
+      <option>Pulsa</option>
+      <option>Paket Data</option>
+      <option>Token PLN</option>
     </select>
 
-    <label>Nominal</label>
-    <select>
-      <option>5.000</option>
-      <option>10.000</option>
-      <option>20.000</option>
-      <option>50.000</option>
-      <option>100.000</option>
-    </select>
+    <label>Produk</label>
+    <div class="products">
+
+      <label class="product">
+        <span>
+          <input type="radio" name="produk">
+          Pulsa 10.000
+        </span>
+        <strong>Rp11.500</strong>
+      </label>
+
+      <label class="product">
+        <span>
+          <input type="radio" name="produk">
+          Pulsa 20.000
+        </span>
+        <strong>Rp21.500</strong>
+      </label>
+
+      <label class="product">
+        <span>
+          <input type="radio" name="produk">
+          Pulsa 50.000
+        </span>
+        <strong>Rp51.500</strong>
+      </label>
+
+    </div>
 
     <button>BELI SEKARANG</button>
 
     <div class="note">
-      Transaksi cepat & otomatis
+      Transaksi otomatis • 24 jam
     </div>
 
   </div>
