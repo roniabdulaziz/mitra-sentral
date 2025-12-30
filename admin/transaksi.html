@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Transaksi - Admin Sentral</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f2f4f8;
+}
+
+header {
+  background: #0d47a1;
+  color: white;
+  padding: 15px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.container {
+  display: flex;
+}
+
+.sidebar {
+  width: 220px;
+  background: #ffffff;
+  min-height: 100vh;
+  border-right: 1px solid #ddd;
+}
+
+.sidebar a {
+  display: block;
+  padding: 12px 15px;
+  color: #333;
+  text-decoration: none;
+  font-size: 14px;
+  border-bottom: 1px solid #eee;
+}
+
+.sidebar a:hover {
+  background: #e3f2fd;
+}
+
+.content {
+  flex: 1;
+  padding: 20px;
+}
+
+.card {
+  background: white;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+th, td {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+}
+
+th {
+  background: #f5f5f5;
+}
+
+.status-success {
+  color: green;
+  font-weight: bold;
+}
+
+.status-pending {
+  color: orange;
+  font-weight: bold;
+}
+
+.status-failed {
+  color: red;
+  font-weight: bold;
+}
+</style>
+</head>
+
+<body>
+
+<header>ADMIN SENTRAL</header>
+
+<div class="container">
+
+  <div class="sidebar">
+    <a href="index.html">Dashboard</a>
+    <a href="transaksi.html"><b>Transaksi</b></a>
+    <a href="member.html">Member</a>
+    <a href="saldo.html">Saldo Member</a>
+    <a href="rekening.html">Rekening Pembayaran</a>
+    <a href="kategori.html">Kategori Produk</a>
+    <a href="produk.html">Produk</a>
+  </div>
+
+  <div class="content">
+    <div class="card">
+      <h3>Data Transaksi</h3>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Tanggal</th>
+            <th>Member</th>
+            <th>Produk</th>
+            <th>Nomor</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>30-12-2025</td>
+            <td>Roni</td>
+            <td>Pulsa 10.000</td>
+            <td>08123456789</td>
+            <td class="status-success">SUCCESS</td>
+          </tr>
+          <tr>
+            <td>30-12-2025</td>
+            <td>Andi</td>
+            <td>Pulsa 20.000</td>
+            <td>08987654321</td>
+            <td class="status-pending">PENDING</td>
+          </tr>
+          <tr>
+            <td>30-12-2025</td>
+            <td>Budi</td>
+            <td>Data 5GB</td>
+            <td>08211223344</td>
+            <td class="status-failed">FAILED</td>
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
