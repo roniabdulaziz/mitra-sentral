@@ -5,7 +5,7 @@ const SUPABASE_URL = "https://igtrnhjexdxymgoufnoy.supabase.co";
 const SUPABASE_ANON_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlndHJuaGpleGR4eW1nb3Vmbm95Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcwNjY3NTMsImV4cCI6MjA4MjY0Mjc1M30.r1c85loIq2uqsbqaUQ-Jc7t3R8Lhi3iEiHArXGgw3gc";
 
-// ⚠️ JANGAN pakai nama "supabase"
+// ⚠️ JANGAN PAKAI NAMA VARIABEL "supabase"
 const sb = window.supabase.createClient(
   SUPABASE_URL,
   SUPABASE_ANON_KEY
@@ -27,6 +27,7 @@ btnLogin.addEventListener("click", async () => {
     return;
   }
 
+  // aktifkan spinner
   btnLogin.classList.add("loading");
   btnLogin.disabled = true;
 
@@ -46,13 +47,23 @@ btnLogin.addEventListener("click", async () => {
       return;
     }
 
-    // SIMPAN SESSION
+    // ================= HITUNG EXPIRED =================
+    const role = data.role || "user";
+    const now = Date.now();
+
+    const expiredAt =
+      role === "admin"
+        ? now + 30 * 24 * 60 * 60 * 1000 // ADMIN 30 HARI
+        : now + 7 * 24 * 60 * 60 * 1000; // USER 7 HARI
+
+    // ================= SIMPAN SESSION =================
     localStorage.setItem("login", "true");
+    localStorage.setItem("login_expired", expiredAt.toString());
     localStorage.setItem("member_id", data.id);
     localStorage.setItem("member_nama", data.nama);
-    localStorage.setItem("member_role", data.role);
+    localStorage.setItem("member_role", role);
 
-    // REDIRECT
+    // ================= REDIRECT =================
     window.location.href = "/user/index.html";
 
   } catch (err) {
@@ -63,17 +74,13 @@ btnLogin.addEventListener("click", async () => {
   }
 });
 
-// ================= RESET STATE SAAT KEMBALI KE LOGIN =================
+// ================= RESET STATE SAAT BACK =================
 window.addEventListener("pageshow", () => {
-  const btn = document.getElementById("btnLogin");
-  const err = document.getElementById("errorMsg");
-
-  if (btn) {
-    btn.classList.remove("loading");
-    btn.disabled = false;
+  if (btnLogin) {
+    btnLogin.classList.remove("loading");
+    btnLogin.disabled = false;
   }
-
-  if (err) {
-    err.textContent = "";
+  if (errorMsg) {
+    errorMsg.textContent = "";
   }
 });
