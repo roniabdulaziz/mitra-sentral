@@ -3,15 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login Member Sentral</title>
+  <title>Login Mitra Sentral</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
+      flex-direction: column;
       height: 100vh;
       background: #f0f2f5;
+      margin: 0;
     }
     .login-box {
       background: #fff;
@@ -20,6 +22,7 @@
       box-shadow: 0 5px 15px rgba(0,0,0,0.1);
       width: 300px;
       text-align: center;
+      margin-bottom: 20px;
     }
     input {
       width: 100%;
@@ -27,6 +30,7 @@
       margin: 10px 0;
       border-radius: 5px;
       border: 1px solid #ccc;
+      box-sizing: border-box;
     }
     button {
       width: 100%;
@@ -41,27 +45,38 @@
     button:hover {
       background: #45a049;
     }
+    footer {
+      text-align: center;
+      font-size: 14px;
+      color: #555;
+      line-height: 1.5;
+    }
   </style>
 </head>
 <body>
+  <h2>Login Mitra Sentral</h2>
+
   <div class="login-box">
-    <h2>Login Member Sentral</h2>
     <input type="text" id="hp" placeholder="Nomor HP">
     <input type="password" id="pin" placeholder="PIN 4 digit" maxlength="4">
     <button id="btnLogin">MASUK</button>
   </div>
 
+  <footer>
+    <strong>SENTRAL</strong><br>
+    Jl. Banjar Getas Korleko Selatan<br>
+    Kabupaten Lombok Timur, NTB (8316)<br>
+    Telp/WA 081936046191
+  </footer>
+
   <!-- Supabase JS -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    // Supabase URL & PUBLIC ANON KEY kamu
     const SUPABASE_URL = "https://igtrnhjexdxymgoufnoy.supabase.co";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlndHJuaGpleGR4eW1nb3Vmbm95Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcwNjY3NTMsImV4cCI6MjA4MjY0Mjc1M30.r1c85loIq2uqsbqaUQ-Jc7t3R8Lhi3iEiHArXGgw3gc";
 
-    // Buat client Supabase
     const supabase = Supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // Login Member
     document.getElementById("btnLogin").addEventListener("click", async () => {
       const hp = document.getElementById("hp").value.trim();
       const pin = document.getElementById("pin").value.trim();
