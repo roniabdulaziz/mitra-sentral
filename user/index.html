@@ -5,54 +5,50 @@
 <title>Sentral Pulsa</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
 <style>
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, Arial, sans-serif;
   background: #f1f3f6;
-  padding-bottom: 70px; /* ruang untuk bottom nav */
+  padding-bottom: 70px;
 }
 
-/* ===== HEADER ===== */
+/* HEADER */
 header {
   background: #1565c0;
   color: #fff;
-  padding: 15px;
+  padding: 14px;
   text-align: center;
-  font-size: 18px;
-  font-weight: bold;
+  font-size: 17px;
+  font-weight: 600;
 }
 
-/* ===== CONTENT ===== */
+/* CONTENT */
 .container {
-  padding: 15px;
+  padding: 14px;
 }
 
 .card {
   background: #fff;
   border-radius: 12px;
-  padding: 15px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  padding: 14px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
 }
 
 label {
   display: block;
-  margin-top: 15px;
-  font-size: 14px;
-  font-weight: bold;
+  margin-top: 12px;
+  font-size: 13px;
+  font-weight: 600;
 }
 
 input, select {
   width: 100%;
   padding: 10px;
-  margin-top: 5px;
-  border-radius: 6px;
+  margin-top: 6px;
+  border-radius: 8px;
   border: 1px solid #ccc;
   font-size: 14px;
 }
@@ -66,62 +62,59 @@ input, select {
   justify-content: space-between;
   align-items: center;
   padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
   margin-bottom: 8px;
   font-size: 14px;
 }
 
-.product input {
-  margin-right: 8px;
-}
-
 button {
-  margin-top: 20px;
+  margin-top: 18px;
   width: 100%;
   padding: 12px;
   background: #1565c0;
   color: #fff;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   font-size: 16px;
-  font-weight: bold;
+  font-weight: 600;
 }
 
 .note {
   text-align: center;
   font-size: 12px;
-  color: gray;
-  margin-top: 15px;
+  color: #777;
+  margin-top: 12px;
 }
 
-/* ===== BOTTOM NAV ===== */
+/* BOTTOM NAV */
 .bottom-nav {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
   height: 60px;
-  background: #ffffff;
+  background: #fff;
   border-top: 1px solid #ddd;
   display: flex;
   justify-content: space-around;
   align-items: center;
-  z-index: 999;
 }
 
 .bottom-nav a {
   text-decoration: none;
   color: #888;
-  font-size: 12px;
+  font-size: 11px;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.bottom-nav a i {
-  font-size: 18px;
-  margin-bottom: 4px;
+.bottom-nav a svg {
+  width: 22px;
+  height: 22px;
+  margin-bottom: 3px;
+  fill: currentColor;
 }
 
 .bottom-nav a.active {
@@ -150,60 +143,58 @@ button {
     <label>Produk</label>
     <div class="products">
 
-      <label class="product">
-        <span>
-          <input type="radio" name="produk">
-          Pulsa 10.000
-        </span>
+      <div class="product">
+        <span>Pulsa 10.000</span>
         <strong>Rp11.500</strong>
-      </label>
+      </div>
 
-      <label class="product">
-        <span>
-          <input type="radio" name="produk">
-          Pulsa 20.000
-        </span>
+      <div class="product">
+        <span>Pulsa 20.000</span>
         <strong>Rp21.500</strong>
-      </label>
+      </div>
 
-      <label class="product">
-        <span>
-          <input type="radio" name="produk">
-          Pulsa 50.000
-        </span>
+      <div class="product">
+        <span>Pulsa 50.000</span>
         <strong>Rp51.500</strong>
-      </label>
+      </div>
 
     </div>
 
     <button>BELI SEKARANG</button>
 
-    <div class="note">
-      Transaksi otomatis • 24 jam
-    </div>
+    <div class="note">Transaksi otomatis • 24 jam</div>
 
   </div>
 </div>
 
-<!-- ===== BOTTOM NAVIGATION ===== -->
+<!-- BOTTOM NAV -->
 <nav class="bottom-nav">
   <a href="index.html" class="active">
-    <i class="fas fa-exchange-alt"></i>
+    <!-- Transaksi -->
+    <svg viewBox="0 0 24 24">
+      <path d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z"/>
+    </svg>
     <span>Transaksi</span>
   </a>
 
   <a href="riwayat.html">
-    <i class="fas fa-clock"></i>
+    <!-- Riwayat -->
+    <svg viewBox="0 0 24 24">
+      <path d="M13 3a9 9 0 1 0 9 9h-2a7 7 0 1 1-7-7V3zm-1 5h2v6l4 2-1 1-5-3V8z"/>
+    </svg>
     <span>Riwayat</span>
   </a>
 
   <a href="akun.html">
-    <i class="fas fa-user"></i>
+    <!-- Akun -->
+    <svg viewBox="0 0 24 24">
+      <path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5zm0 2c-4 0-8 2-8 6h16c0-4-4-6-8-6z"/>
+    </svg>
     <span>Akun</span>
   </a>
 </nav>
 
-<!-- 🔐 PROTEKSI LOGIN -->
+<!-- 🔐 GUARD LOGIN -->
 <script src="guard.js"></script>
 
 </body>
