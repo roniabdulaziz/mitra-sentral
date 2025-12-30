@@ -60,5 +60,18 @@ btnLogin.addEventListener("click", async () => {
     errorMsg.textContent = "Terjadi kesalahan sistem";
     btnLogin.classList.remove("loading");
     btnLogin.disabled = false;
+
+    // ================= RESET STATE SAAT KEMBALI KE LOGIN =================
+window.addEventListener("pageshow", () => {
+  const btn = document.getElementById("btnLogin");
+  const err = document.getElementById("errorMsg");
+
+  if (btn) {
+    btn.classList.remove("loading");
+    btn.disabled = false;
+  }
+
+  if (err) {
+    err.textContent = "";
   }
 });
