@@ -8,32 +8,31 @@
 /* BODY */
 body {
   font-family: Arial, sans-serif;
-  height: 100vh;
+  min-height: 100vh;
   background: linear-gradient(135deg, #1e88e5, #0d47a1);
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
-/* LOGIN FIXED CENTER */
-.login-fixed {
-  position: fixed;
-  inset: 0;
+/* LOGIN AREA */
+.login-page {
+  flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-/* CARD */
+/* CARD LOGIN */
 .login-card {
   width: 320px;
   background: #ffffff;
-  padding: 28px;
+  padding: 26px;
   border-radius: 14px;
-  box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+  box-shadow: 0 15px 40px rgba(0,0,0,0.18);
+  text-align: center;
 }
 
-/* TITLE */
 .login-card h2 {
-  text-align: center;
   margin-bottom: 20px;
   color: #333;
 }
@@ -73,19 +72,21 @@ body {
 /* MINI BRAND */
 .brand-mini {
   margin-top: 14px;
-  text-align: center;
   font-size: 12px;
   color: #555;
 }
 
-/* FOOTER */
-.login-footer {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  background: rgba(13, 71, 161, 0.95);
+/* FOOTER (ALA HOSTNIC) */
+.site-footer {
+  background: #0d47a1;
   color: #ffffff;
-  text-align: center;
-  padding: 10px;
+  padding: 18px 12px;
   font-size: 12px;
+  text-align: center;
+}
+
+.footer-inner {
+  max-width: 360px;
+  margin: 0 auto;
+  line-height: 1.5;
 }
