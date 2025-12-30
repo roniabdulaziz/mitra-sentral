@@ -8,23 +8,23 @@
 /* BODY */
 body {
   font-family: Arial, sans-serif;
-  height: 100vh;
   background: linear-gradient(135deg, #1e88e5, #0d47a1);
-  overflow: hidden;
 }
 
-/* FULL FIXED CENTER */
-.login-fixed {
-  position: fixed;
-  inset: 0;
+/* WRAPPER (ANTI KETUTUP KEYBOARD) */
+.login-wrapper {
+  min-height: 100dvh;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+  padding: 16px;
 }
 
 /* CARD */
 .login-card {
-  width: 320px;
+  width: 100%;
+  max-width: 340px;
   background: #ffffff;
   padding: 26px;
   border-radius: 14px;
@@ -45,35 +45,73 @@ body {
   margin-bottom: 12px;
   border-radius: 6px;
   border: 1px solid #ccc;
-  font-size: 14px;
+  font-size: 15px;
 }
 
 .login-card input:focus {
   outline: none;
   border-color: #1e88e5;
+  background: #eef4ff;
 }
 
 /* BUTTON */
 .login-card button {
   width: 100%;
-  padding: 12px;
+  padding: 14px;
   background: #1e88e5;
   border: none;
   border-radius: 6px;
   color: #ffffff;
   font-weight: bold;
-  font-size: 15px;
+  font-size: 16px;
   cursor: pointer;
+  margin-top: 4px;
 }
 
 .login-card button:hover {
   background: #1565c0;
 }
 
-/* BRANDING DALAM CARD */
+/* BRANDING */
 .brand {
-  margin-top: 16px;
+  margin-top: 18px;
+}
+
+.brand-name {
+  font-size: 20px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  color: #333;
+}
+
+.brand-tagline {
+  font-size: 13px;
+  color: #666;
+}
+
+/* FOOTER MINI */
+.footer-mini {
+  margin-top: 20px;
+  text-align: center;
+  color: #ffffff;
   font-size: 12px;
-  color: #555;
-  line-height: 1.5;
+}
+
+.footer-mini .address {
+  line-height: 1.4;
+  margin-bottom: 8px;
+}
+
+/* WA ICON */
+.wa-icon {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 42px;
+  height: 42px;
+  background: #25d366;
+  color: #ffffff;
+  border-radius: 50%;
+  font-size: 22px;
+  text-decoration: none;
 }
