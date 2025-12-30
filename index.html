@@ -4,52 +4,63 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login Mitra Sentral</title>
+
+  <!-- Font -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
   <style>
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
+
     body {
       font-family: 'Inter', sans-serif;
       background: linear-gradient(135deg, #6b73ff 0%, #000dff 100%);
+      min-height: 100vh;
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
-      min-height: 100vh;
-      flex-direction: column;
     }
+
     .login-card {
-      background: #fff;
-      padding: 40px 30px;
-      border-radius: 15px;
-      box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+      background: #ffffff;
       width: 320px;
+      padding: 40px 30px;
+      border-radius: 16px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.25);
       text-align: center;
-      animation: fadeIn 0.8s ease-in-out;
+      animation: fadeIn 0.8s ease;
     }
+
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-20px);}
-      to { opacity: 1; transform: translateY(0);}
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
+
     .login-card h2 {
       margin-bottom: 25px;
       color: #333;
+      font-size: 22px;
     }
+
     input {
       width: 100%;
       padding: 12px;
       margin: 10px 0;
-      border: 1px solid #ddd;
       border-radius: 8px;
-      transition: 0.3s;
+      border: 1px solid #ddd;
+      font-size: 14px;
     }
+
     input:focus {
-      border-color: #4CAF50;
       outline: none;
+      border-color: #4CAF50;
       box-shadow: 0 0 5px rgba(76,175,80,0.5);
     }
+
     button {
       width: 100%;
       padding: 12px;
@@ -58,77 +69,98 @@
       border-radius: 8px;
       background: #4CAF50;
       color: #fff;
-      font-weight: 600;
       font-size: 16px;
+      font-weight: 600;
       cursor: pointer;
-      transition: 0.3s;
     }
+
     button:hover {
       background: #43a047;
     }
+
     footer {
       margin-top: 25px;
       text-align: center;
-      color: #fff;
+      color: #ffffff;
       font-size: 14px;
-      line-height: 1.5;
+      line-height: 1.6;
     }
-    footer strong { display:block; font-size: 16px; margin-bottom: 5px; }
+
+    footer strong {
+      display: block;
+      font-size: 16px;
+      margin-bottom: 6px;
+    }
   </style>
 </head>
 <body>
 
+  <!-- LOGIN CARD -->
   <div class="login-card">
     <h2>Login Mitra Sentral</h2>
+
     <input type="text" id="hp" placeholder="Nomor HP">
-    <input type="password" id="pin" placeholder="PIN 4 digit" maxlength="4">
+    <input type="password" id="pin" placeholder="PIN 4 Digit" maxlength="4">
+
     <button id="btnLogin">MASUK</button>
   </div>
 
+  <!-- FOOTER -->
   <footer>
-    <strong>SENTRAL - Distributor Produk Digital</strong>
+    <strong>SENTRAL</strong>
     Jl. Banjar Getas Korleko Selatan<br>
     Kabupaten Lombok Timur, NTB (83615)<br>
-    Telp/WA 081936046191
+    Telp / WA 081936046191
   </footer>
 
-  <!-- Supabase JS -->
+  <!-- SUPABASE -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
+    // TEST SCRIPT
+    alert("SCRIPT LOGIN AKTIF");
+
     const SUPABASE_URL = "https://igtrnhjexdxymgoufnoy.supabase.co";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlndHJuaGpleGR4eW1nb3Vmbm95Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcwNjY3NTMsImV4cCI6MjA4MjY0Mjc1M30.r1c85loIq2uqsbqaUQ-Jc7t3R8Lhi3iEiHArXGgw3gc";
 
-    const supabase = Supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    // INIT SUPABASE (BENAR UNTUK v2)
+    const supabaseClient = supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_ANON_KEY
+    );
 
+    // LOGIN EVENT
     document.getElementById("btnLogin").addEventListener("click", async () => {
+      alert("TOMBOL LOGIN DIKLIK");
+
       const hp = document.getElementById("hp").value.trim();
       const pin = document.getElementById("pin").value.trim();
 
-      if(!hp || !pin){
-        alert("Isi Nomor HP dan PIN!");
+      if (!hp || !pin) {
+        alert("Nomor HP dan PIN wajib diisi");
         return;
       }
 
-      const { data, error } = await supabase
+      const { data, error } = await supabaseClient
         .from("members")
-        .select("*")
+        .select("id,nama,role")
         .eq("hp", hp)
         .eq("pin", pin)
-        .limit(1)
         .single();
 
-      if(error){
-        alert("Error login: " + error.message);
+      if (error || !data) {
+        alert("Login gagal. HP atau PIN salah");
         return;
       }
 
-      if(data){
-        alert("Login sukses! Selamat datang, " + data.nama);
-        window.location.href = "user/index.html";
-      } else {
-        alert("Nomor HP atau PIN salah");
-      }
+      // SIMPAN SESSION
+      localStorage.setItem("member", JSON.stringify(data));
+
+      alert("Login sukses! Selamat datang, " + data.nama);
+
+      // REDIRECT
+      window.location.href = "user/index.html";
     });
   </script>
+
 </body>
 </html>
