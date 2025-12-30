@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Saldo Member - Admin</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+body {
+  margin: 0;
+  font-family: system-ui, Arial, sans-serif;
+  background: #f1f3f6;
+}
+
+header {
+  background: #263238;
+  color: #fff;
+  padding: 16px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.container {
+  padding: 16px;
+}
+
+.card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+label {
+  font-size: 13px;
+  font-weight: 600;
+  display: block;
+  margin-top: 14px;
+}
+
+select, input {
+  width: 100%;
+  padding: 12px;
+  margin-top: 6px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+button {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.add { background: #2e7d32; }
+.sub { background: #c62828; }
+
+.info {
+  margin-top: 14px;
+  font-size: 13px;
+  color: #444;
+}
+</style>
+</head>
+
+<body>
+
+<header>SALDO MEMBER</header>
+
+<div class="container">
+  <div class="card">
+
+    <label>Pilih Member</label>
+    <select id="memberSelect"></select>
+
+    <label>Nominal (Rp)</label>
+    <input type="number" id="nominal" placeholder="10000">
+
+    <div class="actions">
+      <button class="add" onclick="updateSaldo('add')">+ Tambah</button>
+      <button class="sub" onclick="updateSaldo('sub')">- Kurangi</button>
+    </div>
+
+    <div class="info" id="infoText"></div>
+
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+const SUPABASE_URL = "https://igtrnhjexdxymgoufnoy.supabase.co";
+const SUPABASE_ANON_KEY =
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlndHJuaGpleGR4eW1nb3Vmbm95Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcwNjY3NTMsImV4cCI6MjA4MjY0Mjc1M30.r1c85loIq2uqsbqaUQ-Jc7t3R8Lhi3iEiHArXGgw3gc";
+
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+const memberSelect = document.getElementById("memberSelect");
+const infoText = document.getElementById("infoText");
+
+async function loadMembers() {
+  const { data } = await sb
+    .from("members")
+    .select("id,nama,saldo")
+    .order("nama");
+
+  memberSelect.innerHTML = "";
+  data.forEach(m => {
+    const opt = document.createElement("option");
+    opt.value = m.id;
+    opt.textContent = `${m.nama} — Saldo: Rp${m.saldo}`;
+    opt.dataset.saldo = m.saldo;
+    memberSelect.appendChild(opt);
+  });
+}
+
+async function updateSaldo(type) {
+  const memberId = memberSelect.value;
+  const nominal = parseInt(document.getElementById("nominal").value);
+
+  if (!nominal || nominal <= 0) {
+    infoText.textContent = "Nominal tidak valid";
+    return;
+  }
+
+  const currentSaldo =
+    parseInt(memberSelect.selectedOptions[0].dataset.saldo);
+
+  const newSaldo =
+    type === "add"
+      ? currentSaldo + nominal
+      : currentSaldo - nominal;
+
+  if (newSaldo < 0) {
+    infoText.textContent = "Saldo tidak boleh minus";
+    return;
+  }
+
+  await sb
+    .from("members")
+    .update({ saldo: newSaldo })
+    .eq("id", memberId);
+
+  infoText.textContent = "Saldo berhasil diperbarui";
+  loadMembers();
+}
+
+loadMembers();
+</script>
+
+<script src="guard.js"></script>
+
+</body>
+</html>
