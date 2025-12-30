@@ -8,25 +8,44 @@
 <style>
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
+  font-family: system-ui, Arial, sans-serif;
   background: #f1f3f6;
 }
+
+/* HEADER */
 header {
   background: #263238;
   color: #fff;
-  padding: 14px;
+  padding: 16px;
   text-align: center;
-  font-weight: bold;
+  font-weight: 600;
+  font-size: 16px;
 }
+
+/* CONTAINER */
+.container {
+  padding: 16px;
+}
+
+/* MENU CARD */
 .menu {
-  padding: 15px;
-}
-.card {
+  display: block;
   background: #fff;
-  padding: 15px;
-  border-radius: 10px;
-  margin-bottom: 12px;
-  box-shadow: 0 2px 5px rgba(0,0,0,.1);
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 14px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  text-decoration: none;
+  color: #222;
+  font-size: 15px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.menu span {
+  font-size: 18px;
 }
 </style>
 </head>
@@ -35,14 +54,32 @@ header {
 
 <header>ADMIN SENTRAL</header>
 
-<div class="menu">
-  <div class="card">📦 Transaksi</div>
-  <div class="card">👤 Member</div>
-  <div class="card">💰 Saldo Member</div>
-  <div class="card">🏷️ Kategori Produk</div>
-  <div class="card">🛒 Produk</div>
+<div class="container">
+
+  <a class="menu" href="transaksi.html">
+    <span>📦</span> Transaksi
+  </a>
+
+  <a class="menu" href="members.html">
+    <span>👤</span> Member
+  </a>
+
+  <a class="menu" href="saldo.html">
+    <span>💰</span> Saldo Member
+  </a>
+
+  <a class="menu" href="kategori.html">
+    <span>🏷️</span> Kategori Produk
+  </a>
+
+  <a class="menu" href="produk.html">
+    <span>🛒</span> Produk
+  </a>
+
 </div>
 
+<!-- GUARD ADMIN -->
 <script src="guard.js"></script>
+
 </body>
 </html>
