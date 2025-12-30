@@ -2,66 +2,73 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login Mitra Sentral</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
+      margin: 0;
       font-family: 'Inter', sans-serif;
-      background: linear-gradient(135deg, #1e3c72, #2a5298);
-      min-height: 100vh;
+      background: linear-gradient(135deg, #1e88e5, #0d47a1);
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
-      flex-direction: column;
+      min-height: 100vh;
     }
+
     .card {
       background: #fff;
       width: 320px;
       padding: 30px;
       border-radius: 14px;
-      box-shadow: 0 10px 30px rgba(0,0,0,.25);
+      box-shadow: 0 10px 30px rgba(0,0,0,.2);
       text-align: center;
     }
-    h2 { margin-bottom: 20px; color: #333; }
+
+    h2 {
+      margin-bottom: 20px;
+    }
+
     input {
       width: 100%;
       padding: 12px;
       margin-bottom: 12px;
       border-radius: 8px;
       border: 1px solid #ddd;
+      font-size: 14px;
     }
+
     button {
       width: 100%;
       padding: 12px;
-      border: none;
       border-radius: 8px;
+      border: none;
       background: #1e88e5;
-      color: #fff;
+      color: white;
       font-weight: 600;
+      font-size: 15px;
       cursor: pointer;
     }
-    button:hover { background: #1565c0; }
+
     footer {
-      margin-top: 20px;
-      font-size: 13px;
-      color: #fff;
+      margin-top: 25px;
       text-align: center;
+      color: #fff;
+      font-size: 13px;
       line-height: 1.4;
     }
   </style>
 </head>
-
 <body>
 
   <div class="card">
     <h2>Login Mitra Sentral</h2>
-    <input id="hp" placeholder="Nomor HP">
-    <input id="pin" placeholder="PIN 4 digit" type="password" maxlength="4">
-    <button onclick="login()">MASUK</button>
+    <input type="text" id="hp" placeholder="Nomor HP">
+    <input type="password" id="pin" placeholder="PIN 4 Digit" maxlength="4">
+    <button id="btnLogin">MASUK</button>
   </div>
 
   <footer>
@@ -71,15 +78,17 @@
     WA 081936046191
   </footer>
 
-  <!-- SUPABASE -->
+  <!-- SUPABASE (HANYA 1x) -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script>
-    const supabase = supabaseJs.createClient(
-      "https://igtrnhjexdxymgoufnoy.supabase.co",
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlndHJuaGpleGR4eW1nb3Vmbm95Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcwNjY3NTMsImV4cCI6MjA4MjY0Mjc1M30.r1c85loIq2uqsbqaUQ-Jc7t3R8Lhi3iEiHArXGgw3gc"
-    );
 
-    async function login() {
+  <script>
+    const SUPABASE_URL = "https://igtrnhjexdxymgoufnoy.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlndHJuaGpleGR4eW1nb3Vmbm95Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcwNjY3NTMsImV4cCI6MjA4MjY0Mjc1M30.r1c85loIq2uqsbqaUQ-Jc7t3R8Lhi3iEiHArXGgw3gc";
+
+    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    document.getElementById("btnLogin").addEventListener("click", async () => {
+
       const hp = document.getElementById("hp").value.trim();
       const pin = document.getElementById("pin").value.trim();
 
@@ -88,25 +97,29 @@
         return;
       }
 
-      const { data, error } = await supabase
+      const { data, error } = await sb
         .from("members")
         .select("*")
         .eq("hp", hp)
         .eq("pin", pin)
-        .single();
+        .maybeSingle();
 
-      if (error || !data) {
-        alert("Login gagal, HP atau PIN salah");
+      if (error) {
+        alert("SUPABASE ERROR:\n" + error.message);
         return;
       }
 
-      localStorage.setItem("login", "true");
-      localStorage.setItem("nama", data.nama);
-      localStorage.setItem("hp", data.hp);
-      localStorage.setItem("role", data.role);
+      if (!data) {
+        alert("Nomor HP atau PIN salah");
+        return;
+      }
 
+      // simpan session sederhana
+      localStorage.setItem("member", JSON.stringify(data));
+
+      alert("Login berhasil");
       window.location.href = "/user/index.html";
-    }
+    });
   </script>
 
 </body>
