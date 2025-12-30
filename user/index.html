@@ -5,13 +5,21 @@
 <title>Sentral Pulsa</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
 <style>
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
   font-family: Arial, sans-serif;
   background: #f1f3f6;
+  padding-bottom: 70px; /* ruang untuk bottom nav */
 }
 
+/* ===== HEADER ===== */
 header {
   background: #1565c0;
   color: #fff;
@@ -21,13 +29,14 @@ header {
   font-weight: bold;
 }
 
+/* ===== CONTENT ===== */
 .container {
   padding: 15px;
 }
 
 .card {
   background: #fff;
-  border-radius: 10px;
+  border-radius: 12px;
   padding: 15px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
@@ -85,12 +94,45 @@ button {
   color: gray;
   margin-top: 15px;
 }
+
+/* ===== BOTTOM NAV ===== */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: #ffffff;
+  border-top: 1px solid #ddd;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 999;
+}
+
+.bottom-nav a {
+  text-decoration: none;
+  color: #888;
+  font-size: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.bottom-nav a i {
+  font-size: 18px;
+  margin-bottom: 4px;
+}
+
+.bottom-nav a.active {
+  color: #1565c0;
+}
 </style>
 </head>
 
 <body>
 
-<header>SENTRAL PULSA</header>
+<header>SENTRAL</header>
 
 <div class="container">
   <div class="card">
@@ -142,6 +184,24 @@ button {
 
   </div>
 </div>
+
+<!-- ===== BOTTOM NAVIGATION ===== -->
+<nav class="bottom-nav">
+  <a href="index.html" class="active">
+    <i class="fas fa-exchange-alt"></i>
+    <span>Transaksi</span>
+  </a>
+
+  <a href="riwayat.html">
+    <i class="fas fa-clock"></i>
+    <span>Riwayat</span>
+  </a>
+
+  <a href="akun.html">
+    <i class="fas fa-user"></i>
+    <span>Akun</span>
+  </a>
+</nav>
 
 <!-- 🔐 PROTEKSI LOGIN -->
 <script src="guard.js"></script>
