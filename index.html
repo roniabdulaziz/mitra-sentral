@@ -14,15 +14,21 @@
 
     <!-- CARD LOGIN -->
     <div class="login-card">
-      <h2>Login</h2>
+      <h2>Login Mitra Sentral</h2>
 
       <input type="tel" id="hp" placeholder="Nomor HP">
       <input type="password" id="pin" placeholder="PIN 4 Digit" maxlength="4">
 
-      <button id="btnLogin">MASUK</button>
+      <button id="btnLogin">
+        <span class="btn-text">MASUK</span>
+        <span class="spinner"></span>
+      </button>
+
+      <!-- ERROR TEXT -->
+      <div id="errorMsg" class="error-msg"></div>
     </div>
 
-    <!-- BRANDING LUAR CARD -->
+    <!-- BRANDING -->
     <div class="branding">
       <div class="brand-name">SENTRAL</div>
       <div class="brand-tagline">Distributor Produk Digital</div>
@@ -32,12 +38,7 @@
         Kab. Lombok Timur NTB (83615)
       </div>
 
-      <a
-        class="wa-icon"
-        href="https://wa.me/6281936046191"
-        target="_blank"
-        aria-label="Chat WhatsApp"
-      >
+      <a class="wa-icon" href="https://wa.me/6281936046191" target="_blank">
         <i class="fab fa-whatsapp"></i>
       </a>
     </div>
