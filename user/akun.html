@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Akun Saya - Sentral</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+  background: #f1f3f6;
+  padding-bottom: 70px;
+}
+
+/* HEADER */
+header {
+  background: #1565c0;
+  color: #fff;
+  padding: 14px;
+  text-align: center;
+  font-size: 17px;
+  font-weight: 600;
+}
+
+/* CONTENT */
+.container {
+  padding: 14px;
+}
+
+.card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  margin-bottom: 14px;
+}
+
+.label {
+  font-size: 12px;
+  color: #777;
+  margin-bottom: 4px;
+}
+
+.value {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+/* LOGOUT */
+.logout-btn {
+  width: 100%;
+  padding: 14px;
+  background: #e53935;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+}
+</style>
+</head>
+
+<body>
+
+<header>AKUN SAYA</header>
+
+<div class="container">
+
+  <div class="card">
+    <div class="label">Nama</div>
+    <div class="value" id="akunNama">-</div>
+
+    <div class="label">Nomor HP</div>
+    <div class="value" id="akunHp">-</div>
+
+    <div class="label">Role</div>
+    <div class="value" id="akunRole">-</div>
+  </div>
+
+  <button class="logout-btn" onclick="logout()">LOGOUT</button>
+
+</div>
+
+<!-- 🔐 GUARD LOGIN -->
+<script src="guard.js"></script>
+
+<script>
+  // tampilkan data dari session
+  document.getElementById("akunNama").textContent =
+    localStorage.getItem("member_nama") || "-";
+
+  document.getElementById("akunHp").textContent =
+    localStorage.getItem("member_hp") || "-";
+
+  document.getElementById("akunRole").textContent =
+    localStorage.getItem("member_role") || "-";
+
+  function logout() {
+    localStorage.clear();
+    window.location.href = "/";
+  }
+</script>
+
+</body>
+</html>
