@@ -2,136 +2,84 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login Mitra Sentral</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- Font -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: 'Inter', sans-serif;
-      background: linear-gradient(135deg, #6b73ff 0%, #000dff 100%);
+      background: linear-gradient(135deg, #1e3c72, #2a5298);
       min-height: 100vh;
       display: flex;
-      flex-direction: column;
       justify-content: center;
       align-items: center;
+      flex-direction: column;
     }
-
-    .login-card {
-      background: #ffffff;
+    .card {
+      background: #fff;
       width: 320px;
-      padding: 40px 30px;
-      border-radius: 16px;
-      box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+      padding: 30px;
+      border-radius: 14px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.25);
       text-align: center;
-      animation: fadeIn 0.8s ease;
     }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .login-card h2 {
-      margin-bottom: 25px;
-      color: #333;
-      font-size: 22px;
-    }
-
+    h2 { margin-bottom: 20px; color: #333; }
     input {
       width: 100%;
       padding: 12px;
-      margin: 10px 0;
+      margin-bottom: 12px;
       border-radius: 8px;
       border: 1px solid #ddd;
-      font-size: 14px;
     }
-
-    input:focus {
-      outline: none;
-      border-color: #4CAF50;
-      box-shadow: 0 0 5px rgba(76,175,80,0.5);
-    }
-
     button {
       width: 100%;
       padding: 12px;
-      margin-top: 15px;
       border: none;
       border-radius: 8px;
-      background: #4CAF50;
+      background: #1e88e5;
       color: #fff;
-      font-size: 16px;
       font-weight: 600;
       cursor: pointer;
     }
-
-    button:hover {
-      background: #43a047;
-    }
-
+    button:hover { background: #1565c0; }
     footer {
-      margin-top: 25px;
+      margin-top: 20px;
+      font-size: 13px;
+      color: #fff;
       text-align: center;
-      color: #ffffff;
-      font-size: 14px;
-      line-height: 1.6;
-    }
-
-    footer strong {
-      display: block;
-      font-size: 16px;
-      margin-bottom: 6px;
+      line-height: 1.4;
     }
   </style>
 </head>
+
 <body>
 
-  <!-- LOGIN CARD -->
-  <div class="login-card">
+  <div class="card">
     <h2>Login Mitra Sentral</h2>
-
-    <input type="text" id="hp" placeholder="Nomor HP">
-    <input type="password" id="pin" placeholder="PIN 4 Digit" maxlength="4">
-
-    <button id="btnLogin">MASUK</button>
+    <input id="hp" placeholder="Nomor HP">
+    <input id="pin" placeholder="PIN 4 digit" type="password" maxlength="4">
+    <button onclick="login()">MASUK</button>
   </div>
 
-  <!-- FOOTER -->
   <footer>
-    <strong>SENTRAL</strong>
+    <strong>SENTRAL</strong><br>
     Jl. Banjar Getas Korleko Selatan<br>
-    Kabupaten Lombok Timur, NTB (83615)<br>
-    Telp / WA 081936046191
+    Lombok Timur, NTB<br>
+    WA 081936046191
   </footer>
 
   <!-- SUPABASE -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    // TEST SCRIPT
-    alert("SCRIPT LOGIN AKTIF");
-
-    const SUPABASE_URL = "https://igtrnhjexdxymgoufnoy.supabase.co";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlndHJuaGpleGR4eW1nb3Vmbm95Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcwNjY3NTMsImV4cCI6MjA4MjY0Mjc1M30.r1c85loIq2uqsbqaUQ-Jc7t3R8Lhi3iEiHArXGgw3gc";
-
-    // INIT SUPABASE (BENAR UNTUK v2)
-    const supabaseClient = supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_ANON_KEY
+    const supabase = supabaseJs.createClient(
+      "https://igtrnhjexdxymgoufnoy.supabase.co",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlndHJuaGpleGR4eW1nb3Vmbm95Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcwNjY3NTMsImV4cCI6MjA4MjY0Mjc1M30.r1c85loIq2uqsbqaUQ-Jc7t3R8Lhi3iEiHArXGgw3gc"
     );
 
-    // LOGIN EVENT
-    document.getElementById("btnLogin").addEventListener("click", async () => {
-      alert("TOMBOL LOGIN DIKLIK");
-
+    async function login() {
       const hp = document.getElementById("hp").value.trim();
       const pin = document.getElementById("pin").value.trim();
 
@@ -140,26 +88,25 @@
         return;
       }
 
-      const { data, error } = await supabaseClient
+      const { data, error } = await supabase
         .from("members")
-        .select("id,nama,role")
+        .select("*")
         .eq("hp", hp)
         .eq("pin", pin)
         .single();
 
       if (error || !data) {
-        alert("Login gagal. HP atau PIN salah");
+        alert("Login gagal, HP atau PIN salah");
         return;
       }
 
-      // SIMPAN SESSION
-      localStorage.setItem("member", JSON.stringify(data));
+      localStorage.setItem("login", "true");
+      localStorage.setItem("nama", data.nama);
+      localStorage.setItem("hp", data.hp);
+      localStorage.setItem("role", data.role);
 
-      alert("Login sukses! Selamat datang, " + data.nama);
-
-      // REDIRECT
-      window.location.href = "user/index.html";
-    });
+      window.location.href = "/user/index.html";
+    }
   </script>
 
 </body>
