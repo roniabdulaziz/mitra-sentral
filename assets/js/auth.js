@@ -5,6 +5,7 @@ const SUPABASE_URL = "https://igtrnhjexdxymgoufnoy.supabase.co";
 const SUPABASE_ANON_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlndHJuaGpleGR4eW1nb3Vmbm95Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcwNjY3NTMsImV4cCI6MjA4MjY0Mjc1M30.r1c85loIq2uqsbqaUQ-Jc7t3R8Lhi3iEiHArXGgw3gc";
 
+// ⛔ JANGAN deklarasi supabase di tempat lain
 const supabase = window.supabase.createClient(
   SUPABASE_URL,
   SUPABASE_ANON_KEY
@@ -14,7 +15,6 @@ const supabase = window.supabase.createClient(
 const btnLogin = document.getElementById("btnLogin");
 const errorMsg = document.getElementById("errorMsg");
 
-// ================= LOGIN =================
 btnLogin.addEventListener("click", async () => {
   const hp = document.getElementById("hp").value.trim();
   const pin = document.getElementById("pin").value.trim();
@@ -26,7 +26,6 @@ btnLogin.addEventListener("click", async () => {
     return;
   }
 
-  // Aktifkan loading spinner
   btnLogin.classList.add("loading");
   btnLogin.disabled = true;
 
@@ -46,18 +45,18 @@ btnLogin.addEventListener("click", async () => {
       return;
     }
 
-    // SIMPAN SESSION SEDERHANA
+    // SIMPAN SESSION
     localStorage.setItem("login", "true");
     localStorage.setItem("member_id", data.id);
     localStorage.setItem("member_nama", data.nama);
     localStorage.setItem("member_role", data.role);
 
-    // LOGIN BERHASIL → DASHBOARD USER
+    // REDIRECT
     window.location.href = "/user/index.html";
 
   } catch (err) {
     console.error(err);
-    errorMsg.textContent = "Terjadi kesalahan, coba lagi";
+    errorMsg.textContent = "Terjadi kesalahan sistem";
     btnLogin.classList.remove("loading");
     btnLogin.disabled = false;
   }
