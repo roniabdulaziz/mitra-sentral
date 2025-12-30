@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Admin - Kelola Member</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: system-ui, Arial, sans-serif;
+  background: #f1f3f6;
+}
+
+/* HEADER */
+header {
+  background: #263238;
+  color: #fff;
+  padding: 14px;
+  text-align: center;
+  font-weight: 600;
+}
+
+/* CONTAINER */
+.container {
+  padding: 14px;
+}
+
+/* CARD */
+.card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 14px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+
+/* FORM */
+label {
+  font-size: 13px;
+  font-weight: 600;
+  display: block;
+  margin-top: 10px;
+}
+
+input, select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 6px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+button {
+  margin-top: 14px;
+  padding: 12px;
+  width: 100%;
+  border: none;
+  border-radius: 10px;
+  background: #1565c0;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+/* TABLE */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+th, td {
+  padding: 8px;
+  border-bottom: 1px solid #eee;
+  text-align: left;
+}
+
+th {
+  background: #f5f5f5;
+  font-weight: 600;
+}
+</style>
+</head>
+
+<body>
+
+<header>KELOLA MEMBER</header>
+
+<div class="container">
+
+  <!-- FORM TAMBAH MEMBER -->
+  <div class="card">
+    <h3>Tambah Member</h3>
+
+    <label>Nama</label>
+    <input type="text" id="nama">
+
+    <label>Nomor HP</label>
+    <input type="text" id="hp">
+
+    <label>PIN (4 digit)</label>
+    <input type="password" id="pin" maxlength="4">
+
+    <label>Role</label>
+    <select id="role">
+      <option value="user">User</option>
+      <option value="admin">Admin</option>
+    </select>
+
+    <button onclick="tambahMember()">SIMPAN MEMBER</button>
+  </div>
+
+  <!-- LIST MEMBER -->
+  <div class="card">
+    <h3>Daftar Member</h3>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Nama</th>
+          <th>HP</th>
+          <th>Role</th>
+        </tr>
+      </thead>
+      <tbody id="memberList">
+        <tr><td colspan="3">Loading...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<!-- GUARD ADMIN -->
+<script src="guard.js"></script>
+
+<!-- SUPABASE -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+const SUPABASE_URL = "https://igtrnhjexdxymgoufnoy.supabase.co";
+const SUPABASE_ANON_KEY =
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlndHJuaGpleGR4eW1nb3Vmbm95Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcwNjY3NTMsImV4cCI6MjA4MjY0Mjc1M30.r1c85loIq2uqsbqaUQ-Jc7t3R8Lhi3iEiHArXGgw3gc";
+
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// LOAD MEMBER
+async function loadMember() {
+  const { data } = await sb.from("members").select("nama,hp,role").order("nama");
+  const tbody = document.getElementById("memberList");
+  tbody.innerHTML = "";
+
+  if (!data || data.length === 0) {
+    tbody.innerHTML = "<tr><td colspan='3'>Belum ada member</td></tr>";
+    return;
+  }
+
+  data.forEach(m => {
+    tbody.innerHTML += `
+      <tr>
+        <td>${m.nama}</td>
+        <td>${m.hp}</td>
+        <td>${m.role}</td>
+      </tr>
+    `;
+  });
+}
+
+// TAMBAH MEMBER
+async function tambahMember() {
+  const nama = document.getElementById("nama").value.trim();
+  const hp = document.getElementById("hp").value.trim();
+  const pin = document.getElementById("pin").value.trim();
+  const role = document.getElementById("role").value;
+
+  if (!nama || !hp || !pin) {
+    alert("Lengkapi semua data");
+    return;
+  }
+
+  const { error } = await sb.from("members").insert({
+    nama,
+    hp,
+    pin,
+    role
+  });
+
+  if (error) {
+    alert("Gagal tambah member");
+    console.error(error);
+    return;
+  }
+
+  document.getElementById("nama").value = "";
+  document.getElementById("hp").value = "";
+  document.getElementById("pin").value = "";
+
+  loadMember();
+}
+
+loadMember();
+</script>
+
+</body>
+</html>
