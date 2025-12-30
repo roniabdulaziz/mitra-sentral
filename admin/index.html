@@ -9,52 +9,24 @@
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background: #f2f4f8;
+  background: #f1f3f6;
 }
-
 header {
-  background: #0d47a1;
-  color: white;
-  padding: 15px;
+  background: #263238;
+  color: #fff;
+  padding: 14px;
   text-align: center;
-  font-size: 18px;
   font-weight: bold;
 }
-
-.container {
-  display: flex;
-}
-
-.sidebar {
-  width: 220px;
-  background: #ffffff;
-  min-height: 100vh;
-  border-right: 1px solid #ddd;
-}
-
-.sidebar a {
-  display: block;
-  padding: 12px 15px;
-  color: #333;
-  text-decoration: none;
-  font-size: 14px;
-  border-bottom: 1px solid #eee;
-}
-
-.sidebar a:hover {
-  background: #e3f2fd;
-}
-
-.content {
-  flex: 1;
-  padding: 20px;
-}
-
-.card {
-  background: white;
+.menu {
   padding: 15px;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+.card {
+  background: #fff;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 5px rgba(0,0,0,.1);
 }
 </style>
 </head>
@@ -63,31 +35,14 @@ header {
 
 <header>ADMIN SENTRAL</header>
 
-<div class="container">
-
-  <div class="sidebar">
-    <a href="index.html">Dashboard</a>
-    <a href="transaksi.html">Transaksi</a>
-    <a href="member.html">Member</a>
-    <a href="saldo.html">Saldo Member</a>
-    <a href="rekening.html">Rekening Pembayaran</a>
-    <a href="kategori.html">Kategori Produk</a>
-    <a href="produk.html">Produk</a>
-  </div>
-
-  <div class="content">
-    <div class="card">
-      <h3>Dashboard</h3>
-      <p>Selamat datang di Admin Sentral.</p>
-      <ul>
-        <li>Total Transaksi: -</li>
-        <li>Total Member: -</li>
-        <li>Saldo Sistem: -</li>
-      </ul>
-    </div>
-  </div>
-
+<div class="menu">
+  <div class="card">📦 Transaksi</div>
+  <div class="card">👤 Member</div>
+  <div class="card">💰 Saldo Member</div>
+  <div class="card">🏷️ Kategori Produk</div>
+  <div class="card">🛒 Produk</div>
 </div>
 
+<script src="guard.js"></script>
 </body>
 </html>
