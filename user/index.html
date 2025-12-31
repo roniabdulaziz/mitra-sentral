@@ -30,7 +30,7 @@ header {
   padding: 14px;
 }
 
-/* CARD GENERAL */
+/* CARD */
 .card {
   background: #fff;
   border-radius: 14px;
@@ -53,18 +53,20 @@ header {
 .member-saldo {
   font-size: 26px;
   font-weight: 700;
-  margin: 6px 0 10px;
+  margin: 6px 0 12px;
 }
 
 .btn-topup {
-  display: inline-block;
-  padding: 8px 14px;
+  display: block;
+  width: 100%;
+  padding: 10px;
   background: #ffffff;
   color: #1565c0;
   border-radius: 20px;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
   text-decoration: none;
+  text-align: center;
 }
 
 /* FORM */
@@ -167,10 +169,15 @@ button {
     <div class="member-name">
       Halo, <strong id="memberName">Member</strong>
     </div>
+
     <div class="member-saldo">
       Rp <span id="memberSaldo">0</span>
     </div>
-    <a href="#" class="btn-topup">Isi Saldo</a>
+
+    <!-- ✅ LINK SUDAH BENAR -->
+    <a href="isi-saldo.html" class="btn-topup">
+      Isi Saldo
+    </a>
   </div>
 
   <!-- CARD TRANSAKSI -->
@@ -205,7 +212,9 @@ button {
 
     <button>BELI SEKARANG</button>
 
-    <div class="note">Transaksi otomatis • 24 jam</div>
+    <div class="note">
+      Transaksi otomatis • 24 jam
+    </div>
 
   </div>
 </div>
@@ -237,9 +246,8 @@ button {
 <!-- 🔐 GUARD LOGIN -->
 <script src="guard.js"></script>
 
-<!-- SESSION DISPLAY -->
+<!-- SESSION -->
 <script>
-  // tampilkan nama dari session
   const nama = localStorage.getItem("member_nama") || "Member";
   document.getElementById("memberName").textContent = nama;
 
