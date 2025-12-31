@@ -1,21 +1,32 @@
+console.log("produk.js aktif");
+
+// ================= SUPABASE =================
 const SUPABASE_URL = "https://igtrnhjexdxymgoufnoy.supabase.co";
-const SUPABASE_ANON_KEY =
-"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlndHJuaGpleGR4eW1nb3Vmbm95Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcwNjY3NTMsImV4cCI6MjA4MjY0Mjc1M30.r1c85loIq2uqsbqaUQ-Jc7t3R8Lhi3iEiHArXGgw3gc";
+const SUPABASE_ANON_KEY = "PASTE_ANON_KEY_KAMU_YANG_SUDAH_ADA";
 
-const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const sb = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+);
 
-const kategoriSelect = document.getElementById("kategoriSelect");
+// ================= ELEMENT =================
+const form = document.getElementById("formProduk");
 const produkList = document.getElementById("produkList");
+const kategoriSelect = document.getElementById("kategori");
 
-/* ================= LOAD KATEGORI ================= */
+// ================= LOAD KATEGORI =================
 async function loadKategori() {
-  const { data } = await sb
+  const { data, error } = await sb
     .from("categories")
-    .select("id, nama")
+    .select("*")
     .order("nama");
 
-  kategoriSelect.innerHTML = "";
+  if (error) {
+    console.error(error);
+    return;
+  }
 
+  kategoriSelect.innerHTML = "";
   data.forEach(k => {
     const opt = document.createElement("option");
     opt.value = k.id;
@@ -24,41 +35,41 @@ async function loadKategori() {
   });
 }
 
-/* ================= TAMBAH PRODUK ================= */
-async function tambahProduk() {
-  const kategori_id = kategoriSelect.value;
-  const nama = document.getElementById("namaProduk").value.trim();
-  const deskripsi = document.getElementById("deskripsiProduk").value.trim();
-  const harga = parseInt(document.getElementById("hargaProduk").value);
-  const sku = document.getElementById("skuProduk").value.trim();
+// ================= SIMPAN PRODUK =================
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-  if (!kategori_id || !nama || !harga || !sku) {
-    alert("Lengkapi semua data produk");
+  const payload = {
+    kategori_id: kategoriSelect.value,
+    nama: form.nama.value,
+    deskripsi: form.deskripsi.value,
+    harga: parseInt(form.harga.value),
+    sku: form.sku.value
+  };
+
+  const { error } = await sb.from("produk").insert([payload]);
+
+  if (error) {
+    alert("Gagal simpan produk");
+    console.error(error);
     return;
   }
 
-  await sb.from("produk").insert({
-    kategori_id,
-    nama,
-    deskripsi,
-    harga,
-    sku
-  });
-
-  document.getElementById("namaProduk").value = "";
-  document.getElementById("deskripsiProduk").value = "";
-  document.getElementById("hargaProduk").value = "";
-  document.getElementById("skuProduk").value = "";
-
+  form.reset();
   loadProduk();
-}
+});
 
-/* ================= LOAD PRODUK ================= */
+// ================= LOAD PRODUK =================
 async function loadProduk() {
-  const { data } = await sb
+  const { data, error } = await sb
     .from("produk")
-    .select("id, nama, harga, deskripsi, categories(nama)")
+    .select("*")
     .order("id", { ascending: false });
+
+  if (error) {
+    console.error(error);
+    return;
+  }
 
   produkList.innerHTML = "";
 
@@ -66,15 +77,15 @@ async function loadProduk() {
     const div = document.createElement("div");
     div.className = "product-item";
     div.innerHTML = `
-      <strong>${p.nama}</strong>
-      <small>Kategori: ${p.categories.nama}</small>
-      <small>Harga: Rp${p.harga.toLocaleString("id-ID")}</small>
-      <small>${p.deskripsi || ""}</small>
+      <strong>${p.nama}</strong><br>
+      <small>Rp ${p.harga.toLocaleString("id-ID")}</small><br>
+      <small>${p.deskripsi || "-"}</small><br>
+      <small>SKU: ${p.sku}</small>
     `;
     produkList.appendChild(div);
   });
 }
 
-/* INIT */
+// ================= INIT =================
 loadKategori();
 loadProduk();
