@@ -2,7 +2,7 @@ console.log("produk.js aktif");
 
 // ================= SUPABASE =================
 const SUPABASE_URL = "https://igtrnhjexdxymgoufnoy.supabase.co";
-const SUPABASE_ANON_KEY = "PASTE_ANON_KEY_KAMU_YANG_SUDAH_ADA";
+const SUPABASE_ANON_KEY = "PASTE_ANON_KEY_KAMU";
 
 const sb = window.supabase.createClient(
   SUPABASE_URL,
@@ -10,52 +10,42 @@ const sb = window.supabase.createClient(
 );
 
 // ================= ELEMENT =================
-const form = document.getElementById("formProduk");
+const btnSimpan = document.getElementById("btnSimpanProduk");
 const produkList = document.getElementById("produkList");
-const kategoriSelect = document.getElementById("kategori");
 
-// ================= LOAD KATEGORI =================
-async function loadKategori() {
-  const { data, error } = await sb
-    .from("categories")
-    .select("*")
-    .order("nama");
-
-  if (error) {
-    console.error(error);
-    return;
-  }
-
-  kategoriSelect.innerHTML = "";
-  data.forEach(k => {
-    const opt = document.createElement("option");
-    opt.value = k.id;
-    opt.textContent = k.nama;
-    kategoriSelect.appendChild(opt);
-  });
+if (!btnSimpan || !produkList) {
+  console.error("❌ ID HTML tidak ditemukan");
+  return;
 }
 
 // ================= SIMPAN PRODUK =================
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
+btnSimpan.addEventListener("click", async () => {
+  const kategori = document.getElementById("kategori").value;
+  const nama = document.getElementById("namaProduk").value.trim();
+  const deskripsi = document.getElementById("deskripsi").value.trim();
+  const harga = parseInt(document.getElementById("harga").value);
+  const sku = document.getElementById("sku").value.trim();
 
-  const payload = {
-    kategori_id: kategoriSelect.value,
-    nama: form.nama.value,
-    deskripsi: form.deskripsi.value,
-    harga: parseInt(form.harga.value),
-    sku: form.sku.value
-  };
-
-  const { error } = await sb.from("produk").insert([payload]);
-
-  if (error) {
-    alert("Gagal simpan produk");
-    console.error(error);
+  if (!kategori || !nama || !harga || !sku) {
+    alert("Lengkapi semua field");
     return;
   }
 
-  form.reset();
+  const { error } = await sb.from("produk").insert({
+    kategori_id: kategori,
+    nama,
+    deskripsi,
+    harga,
+    sku
+  });
+
+  if (error) {
+    console.error(error);
+    alert("Gagal simpan produk");
+    return;
+  }
+
+  alert("Produk berhasil disimpan");
   loadProduk();
 });
 
@@ -75,17 +65,14 @@ async function loadProduk() {
 
   data.forEach(p => {
     const div = document.createElement("div");
-    div.className = "product-item";
+    div.className = "card";
     div.innerHTML = `
       <strong>${p.nama}</strong><br>
-      <small>Rp ${p.harga.toLocaleString("id-ID")}</small><br>
-      <small>${p.deskripsi || "-"}</small><br>
-      <small>SKU: ${p.sku}</small>
+      Rp ${p.harga.toLocaleString("id-ID")}<br>
+      <small>${p.deskripsi || "-"}</small>
     `;
     produkList.appendChild(div);
   });
 }
 
-// ================= INIT =================
-loadKategori();
 loadProduk();
