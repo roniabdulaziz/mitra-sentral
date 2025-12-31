@@ -2,7 +2,8 @@ console.log("produk.js aktif");
 
 // ================= SUPABASE CONFIG =================
 const SUPABASE_URL = "https://igtrnhjexdxymgoufnoy.supabase.co";
-const SUPABASE_ANON_KEY = "PASTE_ANON_KEY_KAMU_YANG_SAMA";
+const SUPABASE_ANON_KEY =
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlndHJuaGpleGR4eW1nb3Vmbm95Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcwNjY3NTMsImV4cCI6MjA4MjY0Mjc1M30.r1c85loIq2uqsbqaUQ-Jc7t3R8Lhi3iEiHArXGgw3gc";
 
 const sb = window.supabase.createClient(
   SUPABASE_URL,
@@ -16,8 +17,8 @@ const produkList = document.getElementById("produkList");
 // ================= LOAD KATEGORI =================
 async function loadKategori() {
   const { data, error } = await sb
-    .from("categories") // 🔥 FIX DI SINI
-    .select("*")
+    .from("categories")
+    .select("id, nama")
     .order("nama");
 
   if (error) {
@@ -25,7 +26,7 @@ async function loadKategori() {
     return;
   }
 
-  kategoriSelect.innerHTML = '<option value="">Pilih Kategori</option>';
+  kategoriSelect.innerHTML = `<option value="">Pilih Kategori</option>`;
 
   data.forEach(k => {
     const opt = document.createElement("option");
@@ -63,6 +64,13 @@ async function tambahProduk() {
   }
 
   alert("Produk berhasil disimpan");
+
+  // reset form
+  document.getElementById("namaProduk").value = "";
+  document.getElementById("deskripsiProduk").value = "";
+  document.getElementById("hargaProduk").value = "";
+  document.getElementById("skuProduk").value = "";
+
   loadProduk();
 }
 
@@ -75,7 +83,7 @@ async function loadProduk() {
       nama,
       deskripsi,
       harga,
-      categories ( nama )
+      categories:categories ( nama )
     `)
     .order("id", { ascending: false });
 
@@ -86,7 +94,7 @@ async function loadProduk() {
 
   produkList.innerHTML = "";
 
-  if (data.length === 0) {
+  if (!data || data.length === 0) {
     produkList.innerHTML = "<p>Belum ada produk</p>";
     return;
   }
@@ -98,7 +106,7 @@ async function loadProduk() {
       <strong>${p.nama}</strong>
       <small>${p.categories?.nama || "-"}</small>
       <small>${p.deskripsi || ""}</small>
-      <small>Rp ${p.harga.toLocaleString("id-ID")}</small>
+      <small>Rp ${Number(p.harga).toLocaleString("id-ID")}</small>
     `;
     produkList.appendChild(div);
   });
