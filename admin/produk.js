@@ -9,22 +9,36 @@ const sb = window.supabase.createClient(
   SUPABASE_ANON_KEY
 );
 
-// ================= ELEMENT =================
-const btnSimpan = document.getElementById("btnSimpanProduk");
-const produkList = document.getElementById("produkList");
+// ================= LOAD KATEGORI =================
+async function loadKategori() {
+  const { data, error } = await sb
+    .from("kategori")
+    .select("*")
+    .order("nama", { ascending: true });
 
-if (!btnSimpan || !produkList) {
-  console.error("❌ ID HTML tidak ditemukan");
-  return;
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  const select = document.getElementById("kategoriSelect");
+  select.innerHTML = `<option value="">Pilih Kategori</option>`;
+
+  data.forEach(k => {
+    const opt = document.createElement("option");
+    opt.value = k.id;
+    opt.textContent = k.nama;
+    select.appendChild(opt);
+  });
 }
 
-// ================= SIMPAN PRODUK =================
-btnSimpan.addEventListener("click", async () => {
-  const kategori = document.getElementById("kategori").value;
+// ================= TAMBAH PRODUK =================
+async function tambahProduk() {
+  const kategori = document.getElementById("kategoriSelect").value;
   const nama = document.getElementById("namaProduk").value.trim();
-  const deskripsi = document.getElementById("deskripsi").value.trim();
-  const harga = parseInt(document.getElementById("harga").value);
-  const sku = document.getElementById("sku").value.trim();
+  const deskripsi = document.getElementById("deskripsiProduk").value.trim();
+  const harga = parseInt(document.getElementById("hargaProduk").value);
+  const sku = document.getElementById("skuProduk").value.trim();
 
   if (!kategori || !nama || !harga || !sku) {
     alert("Lengkapi semua field");
@@ -41,19 +55,26 @@ btnSimpan.addEventListener("click", async () => {
 
   if (error) {
     console.error(error);
-    alert("Gagal simpan produk");
+    alert("Gagal menyimpan produk");
     return;
   }
 
-  alert("Produk berhasil disimpan");
+  alert("Produk berhasil ditambahkan");
+
+  // reset form
+  document.getElementById("namaProduk").value = "";
+  document.getElementById("deskripsiProduk").value = "";
+  document.getElementById("hargaProduk").value = "";
+  document.getElementById("skuProduk").value = "";
+
   loadProduk();
-});
+}
 
 // ================= LOAD PRODUK =================
 async function loadProduk() {
   const { data, error } = await sb
     .from("produk")
-    .select("*")
+    .select("id, nama, deskripsi, harga")
     .order("id", { ascending: false });
 
   if (error) {
@@ -61,18 +82,26 @@ async function loadProduk() {
     return;
   }
 
-  produkList.innerHTML = "";
+  const list = document.getElementById("produkList");
+  list.innerHTML = "";
+
+  if (data.length === 0) {
+    list.innerHTML = "<small>Belum ada produk</small>";
+    return;
+  }
 
   data.forEach(p => {
     const div = document.createElement("div");
-    div.className = "card";
+    div.className = "product-item";
     div.innerHTML = `
-      <strong>${p.nama}</strong><br>
-      Rp ${p.harga.toLocaleString("id-ID")}<br>
+      <strong>${p.nama}</strong>
       <small>${p.deskripsi || "-"}</small>
+      <small>Rp ${p.harga.toLocaleString("id-ID")}</small>
     `;
-    produkList.appendChild(div);
+    list.appendChild(div);
   });
 }
 
+// ================= INIT =================
+loadKategori();
 loadProduk();
