@@ -2,93 +2,218 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<title>Saldo Member - Admin</title>
+<title>Saldo Member - Admin Sentral</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
 <style>
-body{margin:0;font-family:system-ui,Arial;background:#f1f3f6}
-header{background:#263238;color:#fff;padding:16px;text-align:center;font-weight:600}
-.container{padding:16px}
-.card{background:#fff;border-radius:14px;padding:16px;box-shadow:0 2px 6px rgba(0,0,0,.08)}
-label{font-size:13px;font-weight:600;display:block;margin-top:14px}
-select,input{width:100%;padding:12px;margin-top:6px;border-radius:8px;border:1px solid #ccc;font-size:14px}
-.actions{display:flex;gap:10px;margin-top:16px}
-button{flex:1;padding:12px;border:none;border-radius:8px;font-size:14px;font-weight:600;color:#fff}
-.add{background:#2e7d32}.sub{background:#c62828}
-.info{margin-top:14px;font-size:13px}
+body {
+  margin: 0;
+  font-family: system-ui, Arial, sans-serif;
+  background: #f1f3f6;
+}
+
+header {
+  background: #263238;
+  color: #fff;
+  padding: 14px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.container {
+  padding: 14px;
+}
+
+.card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: 0 2px 6px rgba(0,0,0,.1);
+}
+
+label {
+  font-size: 13px;
+  font-weight: 600;
+  display: block;
+  margin-top: 12px;
+}
+
+input, select {
+  width: 100%;
+  padding: 12px;
+  margin-top: 6px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.actions button {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.btn-plus { background: #2e7d32; }
+.btn-minus { background: #c62828; }
+
+.small {
+  font-size: 12px;
+  color: #666;
+  margin-top: 6px;
+}
 </style>
 </head>
+
 <body>
 
 <header>SALDO MEMBER</header>
+
 <div class="container">
   <div class="card">
+
+    <label>Cari Member</label>
+    <input type="text" id="searchMember" placeholder="Ketik nama member...">
+
     <label>Pilih Member</label>
     <select id="memberSelect"></select>
 
     <label>Nominal (Rp)</label>
-    <input type="number" id="nominal" placeholder="10000">
+    <input type="text" id="nominal" placeholder="0" inputmode="numeric">
 
     <label>Keterangan</label>
-    <input type="text" id="ket" placeholder="Topup oleh admin">
+    <input type="text" id="keterangan" value="Topup oleh admin">
 
     <div class="actions">
-      <button class="add" onclick="updateSaldo('tambah')">+ Tambah</button>
-      <button class="sub" onclick="updateSaldo('kurang')">- Kurangi</button>
+      <button class="btn-plus" id="btnTambah">+ Tambah</button>
+      <button class="btn-minus" id="btnKurang">- Kurangi</button>
     </div>
 
-    <div class="info" id="info"></div>
+    <div class="small">
+      * Nominal otomatis diformat (Rp)
+    </div>
+
   </div>
 </div>
 
+<!-- SUPABASE -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="guard.js"></script>
+
 <script>
-const SUPABASE_URL="https://igtrnhjexdxymgoufnoy.supabase.co";
-const SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlndHJuaGpleGR4eW1nb3Vmbm95Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcwNjY3NTMsImV4cCI6MjA4MjY0Mjc1M30.r1c85loIq2uqsbqaUQ-Jc7t3R8Lhi3iEiHArXGgw3gc";
-const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+/* ================= SUPABASE CONFIG ================= */
+const SUPABASE_URL = "https://igtrnhjexdxymgoufnoy.supabase.co";
+const SUPABASE_ANON_KEY =
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlndHJuaGpleGR4eW1nb3Vmbm95Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcwNjY3NTMsImV4cCI6MjA4MjY0Mjc1M30.r1c85loIq2uqsbqaUQ-Jc7t3R8Lhi3iEiHArXGgw3gc";
 
-const sel=document.getElementById('memberSelect');
-const info=document.getElementById('info');
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-async function loadMembers(){
-  const {data}=await sb.from('members').select('id,nama,saldo').order('nama');
-  sel.innerHTML='';
-  data.forEach(m=>{
-    const o=document.createElement('option');
-    o.value=m.id;
-    o.textContent=`${m.nama} — Saldo: Rp${Number(m.saldo).toLocaleString('id-ID')}`;
-    o.dataset.saldo=m.saldo;
-    sel.appendChild(o);
+/* ================= ELEMENT ================= */
+const memberSelect = document.getElementById("memberSelect");
+const searchInput  = document.getElementById("searchMember");
+const nominalInput = document.getElementById("nominal");
+
+let membersData = [];
+
+/* ================= FORMAT RUPIAH ================= */
+function formatRupiah(angka) {
+  return angka.replace(/\D/g, "")
+    .replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+}
+
+nominalInput.addEventListener("input", () => {
+  nominalInput.value = formatRupiah(nominalInput.value);
+});
+
+/* ================= LOAD MEMBER ================= */
+async function loadMembers() {
+  const { data } = await sb
+    .from("members")
+    .select("id, nama, saldo")
+    .order("nama");
+
+  membersData = data || [];
+  renderMembers(membersData);
+}
+
+function renderMembers(list) {
+  memberSelect.innerHTML = "";
+  list.forEach(m => {
+    const opt = document.createElement("option");
+    opt.value = m.id;
+    opt.textContent = `${m.nama} — Saldo: Rp${m.saldo.toLocaleString("id-ID")}`;
+    memberSelect.appendChild(opt);
   });
 }
-async function updateSaldo(jenis){
-  const memberId=sel.value;
-  const nominal=Number(document.getElementById('nominal').value);
-  const ket=document.getElementById('ket').value || 'Topup oleh admin';
-  if(!nominal||nominal<=0){info.textContent='Nominal tidak valid';return;}
 
-  const current=Number(sel.selectedOptions[0].dataset.saldo);
-  const newSaldo = jenis==='tambah' ? current+nominal : current-nominal;
-  if(newSaldo<0){info.textContent='Saldo tidak boleh minus';return;}
+/* ================= SEARCH ================= */
+searchInput.addEventListener("input", () => {
+  const q = searchInput.value.toLowerCase();
+  const filtered = membersData.filter(m =>
+    m.nama.toLowerCase().includes(q)
+  );
+  renderMembers(filtered);
+});
 
-  // 1) update saldo
-  const u = await sb.from('members').update({saldo:newSaldo}).eq('id',memberId);
-  if(u.error){info.textContent=u.error.message;return;}
+/* ================= ACTION ================= */
+async function updateSaldo(jenis) {
+  const memberId = memberSelect.value;
+  const nominal = parseInt(nominalInput.value.replace(/\./g, ""));
+  const ket = document.getElementById("keterangan").value;
 
-  // 2) catat mutasi
-  const i = await sb.from('saldo_mutasi').insert({
+  if (!memberId || !nominal) {
+    alert("Member & nominal wajib diisi");
+    return;
+  }
+
+  // ambil saldo lama
+  const { data: member } = await sb
+    .from("members")
+    .select("saldo")
+    .eq("id", memberId)
+    .single();
+
+  const saldoBaru = jenis === "tambah"
+    ? member.saldo + nominal
+    : member.saldo - nominal;
+
+  if (saldoBaru < 0) {
+    alert("Saldo tidak mencukupi");
+    return;
+  }
+
+  // update saldo
+  await sb.from("members")
+    .update({ saldo: saldoBaru })
+    .eq("id", memberId);
+
+  // insert mutasi
+  await sb.from("saldo_mutasi").insert({
     member_id: memberId,
-    jenis,
-    nominal,
+    jenis: jenis,
+    nominal: nominal,
     keterangan: ket
   });
-  if(i.error){info.textContent=i.error.message;return;}
 
-  info.textContent='Saldo & mutasi berhasil disimpan';
-  document.getElementById('nominal').value='';
+  alert("Saldo berhasil diperbarui");
+  nominalInput.value = "";
   loadMembers();
 }
+
+document.getElementById("btnTambah").onclick = () => updateSaldo("tambah");
+document.getElementById("btnKurang").onclick = () => updateSaldo("kurang");
+
+/* INIT */
 loadMembers();
 </script>
+
 </body>
 </html>
