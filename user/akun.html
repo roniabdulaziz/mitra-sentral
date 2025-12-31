@@ -4,231 +4,109 @@
 <meta charset="UTF-8">
 <title>Akun Saya - Sentral</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
 <style>
-* { box-sizing: border-box; }
-
-body {
-  margin: 0;
-  font-family: system-ui, Arial, sans-serif;
-  background: #f1f3f6;
-  padding-bottom: 70px;
-}
-
-header {
-  background: #1565c0;
-  color: #fff;
-  padding: 14px;
-  text-align: center;
-  font-size: 17px;
-  font-weight: 600;
-}
-
-.container {
-  padding: 14px;
-}
-
-.card {
-  background: #fff;
-  border-radius: 14px;
-  padding: 14px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
-  margin-bottom: 14px;
-}
-
-.title {
-  font-weight: 600;
-  margin-bottom: 10px;
-}
-
-/* MUTASI */
-.mutasi-item {
-  border-bottom: 1px solid #eee;
-  padding: 10px 0;
-  font-size: 14px;
-}
-
-.mutasi-item:last-child {
-  border-bottom: none;
-}
-
-.mutasi-nominal {
-  font-weight: 700;
-  color: #2e7d32;
-}
-
-.mutasi-meta {
-  font-size: 12px;
-  color: #666;
-  margin-top: 2px;
-}
-
-.empty {
-  text-align: center;
-  color: #777;
-  font-size: 14px;
-  padding: 20px 0;
-}
-
-/* PAGINATION */
-.pagination {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 12px;
-}
-
-.pagination button {
-  padding: 8px 14px;
-  border: none;
-  border-radius: 8px;
-  background: #1565c0;
-  color: #fff;
-  font-size: 13px;
-}
-
-.pagination button:disabled {
-  opacity: 0.5;
-}
-
-/* LOGOUT */
-.logout {
-  background: #c62828;
-  color: #fff;
-  border: none;
-  width: 100%;
-  padding: 12px;
-  border-radius: 10px;
-  font-size: 14px;
-  font-weight: 600;
-}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,Arial;background:#f1f3f6;padding-bottom:70px}
+header{background:#1565c0;color:#fff;padding:14px;text-align:center;font-weight:600}
+.container{padding:14px}
+.card{background:#fff;border-radius:14px;padding:14px;box-shadow:0 1px 4px rgba(0,0,0,.1);margin-bottom:14px}
+.title{font-weight:600;margin-bottom:10px}
+.item{border-bottom:1px solid #eee;padding:10px 0}
+.item:last-child{border-bottom:none}
+.nom{font-weight:700}
+.meta{font-size:12px;color:#666}
+.pagination{display:flex;justify-content:space-between;margin-top:12px}
+.pagination button{padding:8px 14px;border:none;border-radius:8px;background:#1565c0;color:#fff;font-size:13px}
+.pagination button:disabled{opacity:.5}
+.logout{background:#c62828;color:#fff;border:none;width:100%;padding:12px;border-radius:10px;font-weight:600}
+.empty{text-align:center;color:#777;padding:20px}
 </style>
 </head>
-
 <body>
 
 <header>AKUN SAYA</header>
-
 <div class="container">
 
-  <!-- INFO AKUN -->
   <div class="card">
     <div><strong>Nama</strong></div>
-    <div id="namaUser">-</div>
-
-    <div style="margin-top:10px;"><strong>Role</strong></div>
-    <div id="roleUser">-</div>
+    <div id="nama">-</div>
+    <div style="margin-top:10px"><strong>Role</strong></div>
+    <div id="role">-</div>
   </div>
 
-  <!-- MUTASI ISI SALDO -->
   <div class="card">
     <div class="title">Mutasi Isi Saldo (7 Hari Terakhir)</div>
-
-    <div id="mutasiList"></div>
-
+    <div id="list"></div>
     <div class="pagination">
-      <button id="prevBtn">Sebelumnya</button>
-      <button id="nextBtn">Berikutnya</button>
+      <button id="prev">Sebelumnya</button>
+      <button id="next">Berikutnya</button>
     </div>
   </div>
 
-  <!-- LOGOUT -->
   <div class="card">
     <button class="logout" onclick="logout()">Logout</button>
   </div>
 
 </div>
 
-<!-- 🔐 GUARD -->
 <script src="guard.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-/* INFO USER */
-document.getElementById("namaUser").textContent =
-  localStorage.getItem("member_nama") || "-";
+const SUPABASE_URL="https://igtrnhjexdxymgoufnoy.supabase.co";
+const SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlndHJuaGpleGR4eW1nb3Vmbm95Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcwNjY3NTMsImV4cCI6MjA4MjY0Mjc1M30.r1c85loIq2uqsbqaUQ-Jc7t3R8Lhi3iEiHArXGgw3gc";
+const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
 
-document.getElementById("roleUser").textContent =
-  localStorage.getItem("member_role") || "-";
+document.getElementById('nama').textContent=localStorage.getItem('member_nama')||'-';
+document.getElementById('role').textContent=localStorage.getItem('member_role')||'-';
 
-/* ====== MUTASI (AUTO CLEAN 7 HARI) ====== */
-const MAX_DAYS = 7;
-const now = new Date().getTime();
+const memberId=localStorage.getItem('member_id');
+const perPage=5;
+let page=0; // offset page
+const list=document.getElementById('list');
+const prev=document.getElementById('prev');
+const next=document.getElementById('next');
 
-// ambil data
-let rawData = JSON.parse(localStorage.getItem("riwayat_deposit") || "[]");
+async function load(){
+  list.innerHTML='';
 
-// filter 7 hari terakhir
-rawData = rawData.filter(item => {
-  const waktu = new Date(item.tanggal).getTime();
-  return (now - waktu) <= MAX_DAYS * 24 * 60 * 60 * 1000;
-});
+  const since = new Date(Date.now()-7*24*60*60*1000).toISOString();
 
-// simpan ulang (hapus otomatis yang lama)
-localStorage.setItem("riwayat_deposit", JSON.stringify(rawData));
+  const {data}=await sb
+    .from('saldo_mutasi')
+    .select('*')
+    .eq('member_id', memberId)
+    .gte('created_at', since)
+    .order('created_at',{ascending:false})
+    .range(page*perPage, page*perPage + perPage - 1);
 
-// urutkan terbaru
-const data = rawData.reverse();
-
-/* PAGINATION */
-const perPage = 5;
-let currentPage = 1;
-
-const list = document.getElementById("mutasiList");
-const prevBtn = document.getElementById("prevBtn");
-const nextBtn = document.getElementById("nextBtn");
-
-function render() {
-  list.innerHTML = "";
-
-  if (data.length === 0) {
-    list.innerHTML = `<div class="empty">Belum ada mutasi isi saldo</div>`;
-    prevBtn.disabled = true;
-    nextBtn.disabled = true;
+  if(!data || data.length===0){
+    list.innerHTML='<div class="empty">Belum ada mutasi</div>';
+    prev.disabled=true; next.disabled=true;
     return;
   }
 
-  const start = (currentPage - 1) * perPage;
-  const end = start + perPage;
-  const pageData = data.slice(start, end);
-
-  pageData.forEach(item => {
+  data.forEach(m=>{
     list.innerHTML += `
-      <div class="mutasi-item">
-        <div class="mutasi-nominal">
-          + Rp${Number(item.nominal).toLocaleString("id-ID")}
+      <div class="item">
+        <div class="nom">
+          ${m.jenis==='tambah' ? '+' : '-'} Rp${Number(m.nominal).toLocaleString('id-ID')}
         </div>
-        <div class="mutasi-meta">
-          ${item.metode} • ${item.tanggal}
+        <div class="meta">
+          ${m.keterangan || '-'} • ${new Date(m.created_at).toLocaleString('id-ID')}
         </div>
-      </div>
-    `;
+      </div>`;
   });
 
-  prevBtn.disabled = currentPage === 1;
-  nextBtn.disabled = end >= data.length;
+  prev.disabled = page===0;
+  next.disabled = data.length<perPage;
 }
 
-prevBtn.onclick = () => {
-  if (currentPage > 1) {
-    currentPage--;
-    render();
-  }
-};
+prev.onclick=()=>{ if(page>0){page--;load();} };
+next.onclick=()=>{ page++; load(); };
 
-nextBtn.onclick = () => {
-  if (currentPage * perPage < data.length) {
-    currentPage++;
-    render();
-  }
-};
+load();
 
-render();
-
-/* LOGOUT */
-function logout() {
-  localStorage.clear();
-  window.location.href = "/";
-}
+function logout(){ localStorage.clear(); window.location.href='/'; }
 </script>
-
 </body>
 </html>
