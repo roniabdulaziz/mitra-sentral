@@ -1,52 +1,55 @@
 console.log("produk.js aktif");
 
-// ================= SUPABASE =================
+// ================= SUPABASE CONFIG =================
 const SUPABASE_URL = "https://igtrnhjexdxymgoufnoy.supabase.co";
-const SUPABASE_ANON_KEY = "PASTE_ANON_KEY_KAMU";
+const SUPABASE_ANON_KEY = "PASTE_ANON_KEY_KAMU_YANG_SAMA";
 
 const sb = window.supabase.createClient(
   SUPABASE_URL,
   SUPABASE_ANON_KEY
 );
 
+// ================= ELEMENT =================
+const kategoriSelect = document.getElementById("kategoriSelect");
+const produkList = document.getElementById("produkList");
+
 // ================= LOAD KATEGORI =================
 async function loadKategori() {
   const { data, error } = await sb
-    .from("kategori")
+    .from("categories") // 🔥 FIX DI SINI
     .select("*")
-    .order("nama", { ascending: true });
+    .order("nama");
 
   if (error) {
-    console.error(error);
+    console.error("Error load kategori:", error);
     return;
   }
 
-  const select = document.getElementById("kategoriSelect");
-  select.innerHTML = `<option value="">Pilih Kategori</option>`;
+  kategoriSelect.innerHTML = '<option value="">Pilih Kategori</option>';
 
   data.forEach(k => {
     const opt = document.createElement("option");
     opt.value = k.id;
     opt.textContent = k.nama;
-    select.appendChild(opt);
+    kategoriSelect.appendChild(opt);
   });
 }
 
 // ================= TAMBAH PRODUK =================
 async function tambahProduk() {
-  const kategori = document.getElementById("kategoriSelect").value;
+  const kategori_id = kategoriSelect.value;
   const nama = document.getElementById("namaProduk").value.trim();
   const deskripsi = document.getElementById("deskripsiProduk").value.trim();
   const harga = parseInt(document.getElementById("hargaProduk").value);
   const sku = document.getElementById("skuProduk").value.trim();
 
-  if (!kategori || !nama || !harga || !sku) {
-    alert("Lengkapi semua field");
+  if (!kategori_id || !nama || !harga || !sku) {
+    alert("Lengkapi semua field wajib");
     return;
   }
 
   const { error } = await sb.from("produk").insert({
-    kategori_id: kategori,
+    kategori_id,
     nama,
     deskripsi,
     harga,
@@ -55,18 +58,11 @@ async function tambahProduk() {
 
   if (error) {
     console.error(error);
-    alert("Gagal menyimpan produk");
+    alert("Gagal simpan produk");
     return;
   }
 
-  alert("Produk berhasil ditambahkan");
-
-  // reset form
-  document.getElementById("namaProduk").value = "";
-  document.getElementById("deskripsiProduk").value = "";
-  document.getElementById("hargaProduk").value = "";
-  document.getElementById("skuProduk").value = "";
-
+  alert("Produk berhasil disimpan");
   loadProduk();
 }
 
@@ -74,19 +70,24 @@ async function tambahProduk() {
 async function loadProduk() {
   const { data, error } = await sb
     .from("produk")
-    .select("id, nama, deskripsi, harga")
+    .select(`
+      id,
+      nama,
+      deskripsi,
+      harga,
+      categories ( nama )
+    `)
     .order("id", { ascending: false });
 
   if (error) {
-    console.error(error);
+    console.error("Error load produk:", error);
     return;
   }
 
-  const list = document.getElementById("produkList");
-  list.innerHTML = "";
+  produkList.innerHTML = "";
 
   if (data.length === 0) {
-    list.innerHTML = "<small>Belum ada produk</small>";
+    produkList.innerHTML = "<p>Belum ada produk</p>";
     return;
   }
 
@@ -95,13 +96,16 @@ async function loadProduk() {
     div.className = "product-item";
     div.innerHTML = `
       <strong>${p.nama}</strong>
-      <small>${p.deskripsi || "-"}</small>
+      <small>${p.categories?.nama || "-"}</small>
+      <small>${p.deskripsi || ""}</small>
       <small>Rp ${p.harga.toLocaleString("id-ID")}</small>
     `;
-    list.appendChild(div);
+    produkList.appendChild(div);
   });
 }
 
 // ================= INIT =================
-loadKategori();
-loadProduk();
+document.addEventListener("DOMContentLoaded", () => {
+  loadKategori();
+  loadProduk();
+});
