@@ -6,6 +6,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
+* { box-sizing: border-box; }
+
 body {
   margin: 0;
   font-family: system-ui, Arial, sans-serif;
@@ -35,19 +37,34 @@ header {
 .title {
   font-weight: 600;
   margin-bottom: 10px;
+  font-size: 15px;
 }
 
 .method {
   border: 1px solid #ddd;
-  border-radius: 10px;
+  border-radius: 12px;
   padding: 12px;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
   font-size: 14px;
 }
 
 .method strong {
   display: block;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
+}
+
+.method small {
+  display: block;
+  margin-top: 6px;
+  color: #555;
+}
+
+.qris-img {
+  width: 100%;
+  max-width: 260px;
+  margin-top: 10px;
+  border-radius: 12px;
+  display: block;
 }
 
 label {
@@ -67,7 +84,7 @@ input, select {
 }
 
 button {
-  margin-top: 16px;
+  margin-top: 18px;
   width: 100%;
   padding: 14px;
   border: none;
@@ -82,7 +99,7 @@ button {
   font-size: 13px;
   color: #555;
   margin-top: 10px;
-  line-height: 1.4;
+  line-height: 1.5;
 }
 </style>
 </head>
@@ -97,31 +114,39 @@ button {
   <div class="card">
     <div class="title">Metode Pembayaran</div>
 
+    <!-- QRIS -->
     <div class="method">
       <strong>QRIS</strong>
-      Scan QRIS Sentral menggunakan DANA / ShopeePay / GoPay / OVO
+      <img
+        src="../assets/img/IMG_20250917_121713.png"
+        alt="QRIS Sentral"
+        class="qris-img"
+      >
+      <small>
+        Scan QRIS di atas menggunakan DANA / ShopeePay / GoPay
+      </small>
+      <small>
+        Atas Nama: <strong>Roni Abdul Aziz / Mitra Sentral</strong>
+      </small>
     </div>
 
+    <!-- E-WALLET -->
     <div class="method">
-      <strong>DANA</strong>
-      0819-3604-6191<br>
-      a.n SENTRAL
+      <strong>ShopeePay / DANA / GoPay</strong>
+      Nomor: <strong>0819 3604 6191</strong><br>
+      Atas Nama: <strong>Roni Abdul Aziz / Mitra Sentral</strong>
     </div>
 
-    <div class="method">
-      <strong>ShopeePay</strong>
-      0819-3604-6191<br>
-      a.n SENTRAL
-    </div>
-
+    <!-- SEABANK -->
     <div class="method">
       <strong>SeaBank</strong>
-      9012xxxxxxxx<br>
-      a.n SENTRAL
+      No. Rekening: <strong>901661076035</strong><br>
+      Atas Nama: <strong>Roni Abdul Aziz / Mitra Sentral</strong>
     </div>
+
   </div>
 
-  <!-- FORM KONFIRMASI -->
+  <!-- KONFIRMASI -->
   <div class="card">
     <div class="title">Konfirmasi Transfer</div>
 
@@ -129,8 +154,9 @@ button {
     <select id="metode">
       <option value="">-- Pilih Metode --</option>
       <option>QRIS</option>
-      <option>DANA</option>
       <option>ShopeePay</option>
+      <option>DANA</option>
+      <option>GoPay</option>
       <option>SeaBank</option>
     </select>
 
@@ -140,7 +166,7 @@ button {
     <button onclick="kirimWA()">Saya Sudah Transfer</button>
 
     <div class="note">
-      Setelah transfer, klik tombol di atas untuk konfirmasi ke admin melalui WhatsApp.
+      Setelah melakukan transfer, klik tombol di atas untuk konfirmasi ke admin melalui WhatsApp.
     </div>
   </div>
 
@@ -157,7 +183,7 @@ function kirimWA() {
     return;
   }
 
-  // SIMPAN RIWAYAT
+  // SIMPAN RIWAYAT (LOCAL)
   const riwayat = JSON.parse(localStorage.getItem("riwayat_deposit") || "[]");
   riwayat.push({
     metode,
@@ -171,8 +197,8 @@ function kirimWA() {
 
 Saya sudah transfer isi saldo.
 
-Nama : ${nama}
-Nominal : Rp${Number(nominal).toLocaleString("id-ID")}
+Nama   : ${nama}
+Nominal: Rp${Number(nominal).toLocaleString("id-ID")}
 Metode : ${metode}
 
 Mohon dicek 🙏`;
@@ -183,6 +209,7 @@ Mohon dicek 🙏`;
 }
 </script>
 
+<!-- 🔐 GUARD USER -->
 <script src="guard.js"></script>
 
 </body>
