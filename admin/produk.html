@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Produk - Admin Sentral</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+body {
+  margin: 0;
+  font-family: system-ui, Arial, sans-serif;
+  background: #f1f3f6;
+}
+
+header {
+  background: #263238;
+  color: #fff;
+  padding: 14px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.container {
+  padding: 14px;
+}
+
+.card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: 0 2px 6px rgba(0,0,0,.1);
+  margin-bottom: 14px;
+}
+
+label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  margin-top: 12px;
+}
+
+input, textarea, select {
+  width: 100%;
+  padding: 12px;
+  margin-top: 6px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 60px;
+}
+
+button {
+  margin-top: 16px;
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 10px;
+  background: #2e7d32;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.product-item {
+  border-bottom: 1px solid #eee;
+  padding: 10px 0;
+}
+
+.product-item:last-child {
+  border-bottom: none;
+}
+
+.product-item small {
+  color: #666;
+  display: block;
+  margin-top: 4px;
+}
+</style>
+</head>
+
+<body>
+
+<header>PRODUK</header>
+
+<div class="container">
+
+  <!-- FORM TAMBAH PRODUK -->
+  <div class="card">
+    <label>Kategori</label>
+    <select id="kategoriSelect"></select>
+
+    <label>Nama Produk</label>
+    <input type="text" id="namaProduk" placeholder="Contoh: Pulsa Telkomsel 10K">
+
+    <label>Deskripsi</label>
+    <textarea id="deskripsiProduk" placeholder="Keterangan singkat produk"></textarea>
+
+    <label>Harga (Rp)</label>
+    <input type="number" id="hargaProduk" placeholder="11500">
+
+    <label>SKU (Digiflazz)</label>
+    <input type="text" id="skuProduk" placeholder="TELKOMSEL10">
+
+    <button onclick="tambahProduk()">Simpan Produk</button>
+  </div>
+
+  <!-- LIST PRODUK -->
+  <div class="card">
+    <strong>Daftar Produk</strong>
+    <div id="produkList"></div>
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="guard.js"></script>
+<script src="produk.js"></script>
+
+</body>
+</html>
