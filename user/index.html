@@ -10,12 +10,11 @@
 
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+  font-family: system-ui, Arial, sans-serif;
   background: #f1f3f6;
   padding-bottom: 70px;
 }
 
-/* HEADER */
 header {
   background: #1565c0;
   color: #fff;
@@ -25,12 +24,10 @@ header {
   font-weight: 600;
 }
 
-/* CONTENT */
 .container {
   padding: 14px;
 }
 
-/* CARD */
 .card {
   background: #fff;
   border-radius: 14px;
@@ -39,7 +36,6 @@ header {
   margin-bottom: 14px;
 }
 
-/* MEMBER CARD */
 .member-card {
   background: linear-gradient(135deg, #1e88e5, #1565c0);
   color: #fff;
@@ -69,7 +65,6 @@ header {
   text-align: center;
 }
 
-/* FORM */
 label {
   display: block;
   margin-top: 12px;
@@ -86,7 +81,6 @@ input, select {
   font-size: 14px;
 }
 
-/* PRODUCT LIST */
 .products {
   margin-top: 8px;
 }
@@ -102,7 +96,6 @@ input, select {
   font-size: 14px;
 }
 
-/* BUTTON */
 button {
   margin-top: 18px;
   width: 100%;
@@ -122,7 +115,6 @@ button {
   margin-top: 12px;
 }
 
-/* BOTTOM NAV */
 .bottom-nav {
   position: fixed;
   bottom: 0;
@@ -174,7 +166,6 @@ button {
       Rp <span id="memberSaldo">0</span>
     </div>
 
-    <!-- ✅ LINK SUDAH BENAR -->
     <a href="isi-saldo.html" class="btn-topup">
       Isi Saldo
     </a>
@@ -212,47 +203,51 @@ button {
 
     <button>BELI SEKARANG</button>
 
-    <div class="note">
-      Transaksi otomatis • 24 jam
-    </div>
-
+    <div class="note">Transaksi otomatis • 24 jam</div>
   </div>
 </div>
 
-<!-- BOTTOM NAV -->
 <nav class="bottom-nav">
-  <a href="index.html" class="active">
-    <svg viewBox="0 0 24 24">
-      <path d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z"/>
-    </svg>
-    <span>Transaksi</span>
-  </a>
-
-  <a href="riwayat.html">
-    <svg viewBox="0 0 24 24">
-      <path d="M13 3a9 9 0 1 0 9 9h-2a7 7 0 1 1-7-7V3zm-1 5h2v6l4 2-1 1-5-3V8z"/>
-    </svg>
-    <span>Riwayat</span>
-  </a>
-
-  <a href="akun.html">
-    <svg viewBox="0 0 24 24">
-      <path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5zm0 2c-4 0-8 2-8 6h16c0-4-4-6-8-6z"/>
-    </svg>
-    <span>Akun</span>
-  </a>
+  <a href="index.html" class="active"><span>Transaksi</span></a>
+  <a href="riwayat.html"><span>Riwayat</span></a>
+  <a href="akun.html"><span>Akun</span></a>
 </nav>
 
-<!-- 🔐 GUARD LOGIN -->
+<!-- 🔐 GUARD -->
 <script src="guard.js"></script>
 
-<!-- SESSION -->
-<script>
-  const nama = localStorage.getItem("member_nama") || "Member";
-  document.getElementById("memberName").textContent = nama;
+<!-- SUPABASE -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  // saldo masih dummy
-  document.getElementById("memberSaldo").textContent = "0";
+<script>
+const SUPABASE_URL = "https://igtrnhjexdxymgoufnoy.supabase.co";
+const SUPABASE_ANON_KEY =
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlndHJuaGpleGR4eW1nb3Vmbm95Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcwNjY3NTMsImV4cCI6MjA4MjY0Mjc1M30.r1c85loIq2uqsbqaUQ-Jc7t3R8Lhi3iEiHArXGgw3gc";
+
+const sb = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+);
+
+const memberId = localStorage.getItem("member_id");
+const memberName = localStorage.getItem("member_nama");
+
+document.getElementById("memberName").textContent = memberName || "Member";
+
+async function loadSaldo() {
+  const { data, error } = await sb
+    .from("members")
+    .select("saldo")
+    .eq("id", memberId)
+    .single();
+
+  if (data) {
+    document.getElementById("memberSaldo").textContent =
+      Number(data.saldo).toLocaleString("id-ID");
+  }
+}
+
+loadSaldo();
 </script>
 
 </body>
