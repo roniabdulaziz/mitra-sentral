@@ -123,10 +123,7 @@ button {
         class="qris-img"
       >
       <small>
-        Scan QRIS di atas menggunakan DANA / ShopeePay / GoPay
-      </small>
-      <small>
-        Atas Nama: <strong>Roni Abdul Aziz / Mitra Sentral</strong>
+        Scan QRIS di atas, bisa menggunakan semua bank dan e-wallet
       </small>
     </div>
 
@@ -143,7 +140,6 @@ button {
       No. Rekening: <strong>901661076035</strong><br>
       Atas Nama: <strong>Roni Abdul Aziz / Mitra Sentral</strong>
     </div>
-
   </div>
 
   <!-- KONFIRMASI -->
@@ -161,7 +157,13 @@ button {
     </select>
 
     <label>Nominal Transfer</label>
-    <input type="number" id="nominal" placeholder="Contoh: 50000">
+    <input
+      type="text"
+      id="nominal"
+      placeholder="Rp 0"
+      inputmode="numeric"
+      oninput="formatRupiah(this)"
+    >
 
     <button onclick="kirimWA()">Saya Sudah Transfer</button>
 
@@ -173,9 +175,19 @@ button {
 </div>
 
 <script>
+function formatRupiah(el) {
+  let angka = el.value.replace(/[^0-9]/g, "");
+  if (!angka) {
+    el.value = "";
+    return;
+  }
+  el.value = "Rp " + Number(angka).toLocaleString("id-ID");
+}
+
 function kirimWA() {
   const metode = document.getElementById("metode").value;
-  const nominal = document.getElementById("nominal").value;
+  const nominalText = document.getElementById("nominal").value;
+  const nominal = nominalText.replace(/[^0-9]/g, "");
   const nama = localStorage.getItem("member_nama") || "-";
 
   if (!metode || !nominal || nominal <= 0) {
@@ -183,7 +195,7 @@ function kirimWA() {
     return;
   }
 
-  // SIMPAN RIWAYAT (LOCAL)
+  // SIMPAN RIWAYAT
   const riwayat = JSON.parse(localStorage.getItem("riwayat_deposit") || "[]");
   riwayat.push({
     metode,
