@@ -10,12 +10,11 @@
 
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+  font-family: system-ui, Arial, sans-serif;
   background: #f1f3f6;
   padding-bottom: 70px;
 }
 
-/* HEADER */
 header {
   background: #1565c0;
   color: #fff;
@@ -25,7 +24,6 @@ header {
   font-weight: 600;
 }
 
-/* CONTENT */
 .container {
   padding: 14px;
 }
@@ -33,32 +31,74 @@ header {
 .card {
   background: #fff;
   border-radius: 14px;
-  padding: 16px;
+  padding: 14px;
   box-shadow: 0 1px 4px rgba(0,0,0,0.1);
   margin-bottom: 14px;
 }
 
-.label {
-  font-size: 12px;
-  color: #777;
-  margin-bottom: 4px;
+.title {
+  font-weight: 600;
+  margin-bottom: 10px;
 }
 
-.value {
-  font-size: 15px;
-  font-weight: 600;
-  margin-bottom: 12px;
+/* MUTASI */
+.mutasi-item {
+  border-bottom: 1px solid #eee;
+  padding: 10px 0;
+  font-size: 14px;
+}
+
+.mutasi-item:last-child {
+  border-bottom: none;
+}
+
+.mutasi-nominal {
+  font-weight: 700;
+  color: #2e7d32;
+}
+
+.mutasi-meta {
+  font-size: 12px;
+  color: #666;
+  margin-top: 2px;
+}
+
+.empty {
+  text-align: center;
+  color: #777;
+  font-size: 14px;
+  padding: 20px 0;
+}
+
+/* PAGINATION */
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 12px;
+}
+
+.pagination button {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 8px;
+  background: #1565c0;
+  color: #fff;
+  font-size: 13px;
+}
+
+.pagination button:disabled {
+  opacity: 0.5;
 }
 
 /* LOGOUT */
-.logout-btn {
-  width: 100%;
-  padding: 14px;
-  background: #e53935;
+.logout {
+  background: #c62828;
   color: #fff;
   border: none;
-  border-radius: 12px;
-  font-size: 16px;
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  font-size: 14px;
   font-weight: 600;
 }
 </style>
@@ -70,39 +110,124 @@ header {
 
 <div class="container">
 
+  <!-- INFO AKUN -->
   <div class="card">
-    <div class="label">Nama</div>
-    <div class="value" id="akunNama">-</div>
+    <div><strong>Nama</strong></div>
+    <div id="namaUser">-</div>
 
-    <div class="label">Nomor HP</div>
-    <div class="value" id="akunHp">-</div>
-
-    <div class="label">Role</div>
-    <div class="value" id="akunRole">-</div>
+    <div style="margin-top:10px;"><strong>Role</strong></div>
+    <div id="roleUser">-</div>
   </div>
 
-  <button class="logout-btn" onclick="logout()">LOGOUT</button>
+  <!-- MUTASI ISI SALDO -->
+  <div class="card">
+    <div class="title">Mutasi Isi Saldo (7 Hari Terakhir)</div>
+
+    <div id="mutasiList"></div>
+
+    <div class="pagination">
+      <button id="prevBtn">Sebelumnya</button>
+      <button id="nextBtn">Berikutnya</button>
+    </div>
+  </div>
+
+  <!-- LOGOUT -->
+  <div class="card">
+    <button class="logout" onclick="logout()">Logout</button>
+  </div>
 
 </div>
 
-<!-- 🔐 GUARD LOGIN -->
+<!-- 🔐 GUARD -->
 <script src="guard.js"></script>
 
 <script>
-  // tampilkan data dari session
-  document.getElementById("akunNama").textContent =
-    localStorage.getItem("member_nama") || "-";
+/* INFO USER */
+document.getElementById("namaUser").textContent =
+  localStorage.getItem("member_nama") || "-";
 
-  document.getElementById("akunHp").textContent =
-    localStorage.getItem("member_hp") || "-";
+document.getElementById("roleUser").textContent =
+  localStorage.getItem("member_role") || "-";
 
-  document.getElementById("akunRole").textContent =
-    localStorage.getItem("member_role") || "-";
+/* ====== MUTASI (AUTO CLEAN 7 HARI) ====== */
+const MAX_DAYS = 7;
+const now = new Date().getTime();
 
-  function logout() {
-    localStorage.clear();
-    window.location.href = "/";
+// ambil data
+let rawData = JSON.parse(localStorage.getItem("riwayat_deposit") || "[]");
+
+// filter 7 hari terakhir
+rawData = rawData.filter(item => {
+  const waktu = new Date(item.tanggal).getTime();
+  return (now - waktu) <= MAX_DAYS * 24 * 60 * 60 * 1000;
+});
+
+// simpan ulang (hapus otomatis yang lama)
+localStorage.setItem("riwayat_deposit", JSON.stringify(rawData));
+
+// urutkan terbaru
+const data = rawData.reverse();
+
+/* PAGINATION */
+const perPage = 5;
+let currentPage = 1;
+
+const list = document.getElementById("mutasiList");
+const prevBtn = document.getElementById("prevBtn");
+const nextBtn = document.getElementById("nextBtn");
+
+function render() {
+  list.innerHTML = "";
+
+  if (data.length === 0) {
+    list.innerHTML = `<div class="empty">Belum ada mutasi isi saldo</div>`;
+    prevBtn.disabled = true;
+    nextBtn.disabled = true;
+    return;
   }
+
+  const start = (currentPage - 1) * perPage;
+  const end = start + perPage;
+  const pageData = data.slice(start, end);
+
+  pageData.forEach(item => {
+    list.innerHTML += `
+      <div class="mutasi-item">
+        <div class="mutasi-nominal">
+          + Rp${Number(item.nominal).toLocaleString("id-ID")}
+        </div>
+        <div class="mutasi-meta">
+          ${item.metode} • ${item.tanggal}
+        </div>
+      </div>
+    `;
+  });
+
+  prevBtn.disabled = currentPage === 1;
+  nextBtn.disabled = end >= data.length;
+}
+
+prevBtn.onclick = () => {
+  if (currentPage > 1) {
+    currentPage--;
+    render();
+  }
+};
+
+nextBtn.onclick = () => {
+  if (currentPage * perPage < data.length) {
+    currentPage++;
+    render();
+  }
+};
+
+render();
+
+/* LOGOUT */
+function logout() {
+  localStorage.clear();
+  window.location.href = "/";
+}
 </script>
 
 </body>
