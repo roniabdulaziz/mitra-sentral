@@ -65,7 +65,6 @@ async function tambahProduk() {
 
   alert("Produk berhasil disimpan");
 
-  // reset form
   document.getElementById("namaProduk").value = "";
   document.getElementById("deskripsiProduk").value = "";
   document.getElementById("hargaProduk").value = "";
@@ -76,15 +75,21 @@ async function tambahProduk() {
 
 // ================= LOAD PRODUK =================
 async function loadProduk() {
+
+  // ambil kategori
+  const { data: kategori } = await sb
+    .from("categories")
+    .select("id, nama");
+
+  const kategoriMap = {};
+  kategori.forEach(k => {
+    kategoriMap[k.id] = k.nama;
+  });
+
+  // ambil produk
   const { data, error } = await sb
     .from("produk")
-    .select(`
-      id,
-      nama,
-      deskripsi,
-      harga,
-      categories:categories ( nama )
-    `)
+    .select("id, nama, deskripsi, harga, kategori_id")
     .order("id", { ascending: false });
 
   if (error) {
@@ -104,7 +109,7 @@ async function loadProduk() {
     div.className = "product-item";
     div.innerHTML = `
       <strong>${p.nama}</strong>
-      <small>${p.categories?.nama || "-"}</small>
+      <small>Kategori: ${kategoriMap[p.kategori_id] || "-"}</small>
       <small>${p.deskripsi || ""}</small>
       <small>Rp ${Number(p.harga).toLocaleString("id-ID")}</small>
     `;
